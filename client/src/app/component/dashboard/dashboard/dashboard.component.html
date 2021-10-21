@@ -1,0 +1,25 @@
+<div class="chart">
+  <div class="mini-card">
+    <p>The total number of orders is {{ totalOrders }}</p>
+  </div>
+  <div class="mini-card">
+    <p>
+      Create your own choice and set of orders
+      <a routerLink="/order/create"> Click here</a>
+    </p>
+  </div>
+  <div class="mini-card">
+    <p>
+      List of your orders is one click away
+      <a routerLink="/order/list"> Click here</a>
+    </p>
+  </div>
+</div>
+
+<div *ngIf="chartStatus">
+  <div class="chart">
+    <div id="divChaart" style="margin-left: 20px">
+      <canvas id="canvas"></canvas>
+    </div>
+  </div>
+</div>

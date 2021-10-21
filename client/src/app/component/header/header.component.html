@@ -1,0 +1,51 @@
+<header>
+  <nav
+    class="navbar navbar-expand-lg navbar-light"
+    style="background-color: #00ffdbe0"
+  >
+    <div class="container-fluid">
+
+      <div class="navbar-collapse" id="navbarExample01">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item active">
+            <a
+              class="nav-link"
+              aria-current="page"
+              *ngIf="logoutStatus"
+              routerLink="/home"
+              >Home</a
+            >
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" *ngIf="logoutStatus" routerLink="/order/list"
+              >Order List</a
+            >
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" *ngIf="logoutStatus" routerLink="/order/create"
+              >Create Order</a
+            >
+          </li>
+        </ul>
+
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li
+            class="nav-item"
+            style="margin-left: 65rem; margin-top: 5px; cursor: pointer"
+          >
+            {{ userName | uppercase }}
+          </li>
+          <li style="margin-left: 30px" class="nav-item">
+            <i
+              *ngIf="logoutStatus"
+              (click)="logout()"
+              style="cursor: pointer"
+              class="material-icons"
+              >logout</i
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
