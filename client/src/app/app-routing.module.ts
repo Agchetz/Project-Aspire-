@@ -8,12 +8,13 @@ import { OrderListComponent } from './component/orderComponent/order-list/order-
 import { PageNotFoundComponent } from './component/page-not-found/page-not-found.component';
 import { RegistrationComponent } from './component/userComponent/registration/registration.component';
 import { DynamicGridComponent } from './Shared/dynamic-grid/dynamic-grid.component';
+import { DynamicChartComponent } from './Shared/dynamic-chart/dynamic-chart.component';
 
 const routes: Routes = [
  { path:'', redirectTo:'/login', pathMatch: 'full' },
   {path:"registration", component:RegistrationComponent},
   {path:'login', component:LoginComponent},
-  {path:'order/listt', component: OrderListComponent, canActivate:[AuthGuard]},
+  {path:'chart', component:DynamicChartComponent,canActivate:[AuthGuard]},
   {path:'order/create', component: OrderCreateComponent, canActivate:[AuthGuard]},
   {path:'order/update/:id', component: OrderCreateComponent, canActivate:[AuthGuard]},
   {path:'order/list', component: DynamicGridComponent, canActivate:[AuthGuard]},
@@ -27,6 +28,6 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
-export const routingComponents = [RegistrationComponent, OrderListComponent,DashboardComponent,
+export const routingComponents = [RegistrationComponent, OrderListComponent,DashboardComponent,DynamicChartComponent,
                                     PageNotFoundComponent, OrderCreateComponent,DynamicGridComponent,
                                     LoginComponent]

@@ -14,14 +14,15 @@ export class DashboardComponent implements OnInit {
 
   public chartStatus = true;
   public myChart!: Chart;
-  private temp_Chart!: Array<number>;
   public totalOrders!: number;
 
   constructor(private myservice: BaseService, private toastr: ToastrService) {
-    this.loadChartData()
   }
 
-  ngOnInit(): void { this.getTotalOrders() }
+  ngOnInit(): void { 
+    this.loadChartData()
+    this.getTotalOrders() 
+  }
 
   loadChartData() {
     this.myservice.getOrderstatus().subscribe(
