@@ -20,7 +20,11 @@ const options = {
 };
 mongoose.set("debug", true);
 mongoose
+<<<<<<< HEAD
   .connect(`mongodb://${host}/${DB}`, options)
+=======
+  .connect(`mongodb://localhost/${DB}`, options)
+>>>>>>> 3ef7251bc909695ba407ff9c0281f4f26072d7a5
   .then(() =>
     app.listen(PORT, () =>
       console.log(`Server running on ${http}://${host}:${PORT}`)

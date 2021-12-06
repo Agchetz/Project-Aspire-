@@ -18,7 +18,6 @@ const getOrder = async (req: Request, res: Response): Promise<void> => {
 const getOrderStatus = async (req: Request, res: Response): Promise<void> => {
   let statusData: orderTestStatus[] = await orderModel
     .aggregate()
-    .match({user_id: req.body.user_id})
     .group({ _id: "$status", total: { $sum: 1 } })
     .project({ _id: 1, total: 1 });
   res.send(statusData);
@@ -43,6 +42,7 @@ const createOrder = async (req: Request, res: Response): Promise<void> => {
 };
 
 const updateOrder = async (req: any, res: Response): Promise<void> => {
+  console.log(req.body);
   try {
     const newOrder: any = await orderModel.findOneAndUpdate(
       { _id: req.body.id },

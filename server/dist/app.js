@@ -23,7 +23,7 @@ const options = {
 };
 mongoose_1.default.set("debug", true);
 mongoose_1.default
-    .connect(`mongodb://${host}/${DB}`, options)
+    .connect(`mongodb://localhost/${DB}`, options)
     .then(() => app.listen(PORT, () => console.log(`Server running on ${http}://${host}:${PORT}`)))
     .catch((error) => {
     throw error;

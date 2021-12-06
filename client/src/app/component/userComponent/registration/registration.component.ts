@@ -13,6 +13,7 @@ import { regex } from 'src/app/Shared/validationConstants/regex_constants';
 })
 
 export class RegistrationComponent {
+  public submitted = false;
   public registrationForm = this.formBuilder.group({
       userName: ['',[Validators.required, Validators.pattern(regex.nameValidator)]],
       phoneNumber: ['',[Validators.required, Validators.pattern(regex.numberValidator)]],

@@ -13,8 +13,7 @@ import { FooterComponent } from './component/footer/footer.component';
 import { InterceptorService } from './Shared/interceptor.service';
 import { AuthServiceService } from './Shared/auth-service.service';
 import { DynamicGridComponent } from './Shared/dynamic-grid/dynamic-grid.component';
-import { ForgotPasswordComponent } from './component/userComponent/forgot-password/forgot-password.component';
-import { ResetPasswordComponent } from './component/userComponent/reset-password/reset-password.component';
+import { DynamicChartComponent } from './shared/dynamic-chart/dynamic-chart.component';
 
 
 @NgModule({
@@ -24,8 +23,7 @@ import { ResetPasswordComponent } from './component/userComponent/reset-password
     HeaderComponent,
     FooterComponent,
     DynamicGridComponent,
-    ForgotPasswordComponent,
-    ResetPasswordComponent,
+    DynamicChartComponent,
     
   ],
   imports: [

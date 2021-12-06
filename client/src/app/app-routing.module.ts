@@ -8,47 +8,26 @@ import { OrderListComponent } from './component/orderComponent/order-list/order-
 import { PageNotFoundComponent } from './component/page-not-found/page-not-found.component';
 import { RegistrationComponent } from './component/userComponent/registration/registration.component';
 import { DynamicGridComponent } from './Shared/dynamic-grid/dynamic-grid.component';
-import { ForgotPasswordComponent } from './component/userComponent/forgot-password/forgot-password.component';
-import { ResetPasswordComponent } from './component/userComponent/reset-password/reset-password.component';
+import { DynamicChartComponent } from './Shared/dynamic-chart/dynamic-chart.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'registration', component: RegistrationComponent },
-  { path: 'login', component: LoginComponent },
-  {
-    path: 'order/create',
-    component: OrderCreateComponent,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'order/update/:id',
-    component: OrderCreateComponent,
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'order/list',
-    component: DynamicGridComponent,
-    canActivate: [AuthGuard],
-  },
-  { path: 'home', component: DashboardComponent, canActivate: [AuthGuard] },
-  { path: 'forgotPassword', component: ForgotPasswordComponent },
-  { path: 'resetPassword/:token', component: ResetPasswordComponent},
-  { path: '**', component: PageNotFoundComponent },
+ { path:'', redirectTo:'/login', pathMatch: 'full' },
+  {path:"registration", component:RegistrationComponent},
+  {path:'login', component:LoginComponent},
+  {path:'chart', component:DynamicChartComponent,canActivate:[AuthGuard]},
+  {path:'order/create', component: OrderCreateComponent, canActivate:[AuthGuard]},
+  {path:'order/update/:id', component: OrderCreateComponent, canActivate:[AuthGuard]},
+  {path:'order/list', component: DynamicGridComponent, canActivate:[AuthGuard]},
+  {path:'home', component: DashboardComponent, canActivate:[AuthGuard]},
+ { path:"**", component: PageNotFoundComponent }
+
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
-export const routingComponents = [
-  RegistrationComponent,
-  OrderListComponent,
-  DashboardComponent,
-  ForgotPasswordComponent,
-  PageNotFoundComponent,
-  OrderCreateComponent,
-  DynamicGridComponent,
-  LoginComponent,
-  ResetPasswordComponent
-];
+export class AppRoutingModule { }
+export const routingComponents = [RegistrationComponent, OrderListComponent,DashboardComponent,DynamicChartComponent,
+                                    PageNotFoundComponent, OrderCreateComponent,DynamicGridComponent,
+                                    LoginComponent]
