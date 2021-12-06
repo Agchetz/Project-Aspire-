@@ -19,11 +19,8 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
-<<<<<<< HEAD:server/dist/models/userModel.js
     token: {
         type: String,
     }
-=======
->>>>>>> 3ef7251bc909695ba407ff9c0281f4f26072d7a5:server/server/dist/models/userModel.js
 }, { timestamps: true });
 exports.default = (0, mongoose_1.model)("IUser", userSchema);

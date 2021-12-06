@@ -31,6 +31,7 @@ exports.getOrder = getOrder;
 const getOrderStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let statusData = yield orderModel_2.default
         .aggregate()
+        .match({ user_id: req.body.user_id })
         .group({ _id: "$status", total: { $sum: 1 } })
         .project({ _id: 1, total: 1 });
     res.send(statusData);
@@ -54,7 +55,6 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.createOrder = createOrder;
 const updateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.body);
     try {
         const newOrder = yield orderModel_2.default.findOneAndUpdate({ _id: req.body.id }, req.body);
         res

@@ -16,10 +16,7 @@ router.get('/getuser', userController_1.getUser);
 router.post('/user', [validator.registerValidator(), validator.validateInput], userController_1.createUser);
 router.post('/signup', [validator.registerValidator(), validator.validateInput], userController_1.createUser);
 router.post('/login', [validator.loginValidator(), validator.validateInput], userController_1.login);
-<<<<<<< HEAD:server/dist/routes/index.js
 router.post('/forgotPassword', userController_1.postForgotPassword);
 router.post('/resetPassword/:token', userController_1.checkUser);
 router.post('/confirm-reset-password/:token', userController_1.updatePassword);
-=======
->>>>>>> 3ef7251bc909695ba407ff9c0281f4f26072d7a5:server/server/dist/routes/index.js
 exports.default = router;
