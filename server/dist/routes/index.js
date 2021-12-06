@@ -16,4 +16,7 @@ router.get('/getuser', userController_1.getUser);
 router.post('/user', [validator.registerValidator(), validator.validateInput], userController_1.createUser);
 router.post('/signup', [validator.registerValidator(), validator.validateInput], userController_1.createUser);
 router.post('/login', [validator.loginValidator(), validator.validateInput], userController_1.login);
+router.post('/forgotPassword', userController_1.postForgotPassword);
+router.post('/resetPassword/:token', userController_1.checkUser);
+router.post('/confirm-reset-password/:token', userController_1.updatePassword);
 exports.default = router;

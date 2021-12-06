@@ -19,5 +19,8 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
+    token: {
+        type: String,
+    }
 }, { timestamps: true });
 exports.default = (0, mongoose_1.model)("IUser", userSchema);
