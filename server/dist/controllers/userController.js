@@ -1,0 +1,222 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.updatePassword = exports.checkUser = exports.postForgotPassword = exports.login = exports.createUser = exports.getUser = void 0;
+const userModel_1 = __importDefault(require("../models/userModel"));
+const tokenModel_1 = __importDefault(require("../models/tokenModel"));
+const checkJwt_1 = require("../middleware/checkJwt");
+const nodemailer = require('nodemailer');
+const authModel = require('../models/authmodel');
+const config = require("../config/config");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield userModel_1.default.find();
+        return res
+            .status(config.successStatusCode)
+            .json(response("Users returned successfully", users, config.successStatusCode));
+    }
+    catch (error) {
+        return res
+            .status(config.badRequestStatusCode)
+            .json(response("Unable to get  the user", {}, config.badRequestStatusCode));
+    }
+});
+exports.getUser = getUser;
+const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const body = req.body;
+        const user = new userModel_1.default({
+            userName: body.userName,
+            phoneNumber: body.phoneNumber,
+            email: body.email,
+            password: bcrypt.hashSync(body.password.toString(), 10),
+        });
+        let userExist;
+        userExist = yield checkEmail(body.email);
+        if (userExist) {
+            return res
+                .status(config.badRequestStatusCode)
+                .json(response("User already exist", body, config.badRequestStatusCode));
+        }
+        const newUser = yield user.save();
+        return res
+            .status(config.successStatusCode)
+            .json(response("User added", newUser, config.successStatusCode));
+    }
+    catch (error) {
+        return res
+            .status(config.badRequestStatusCode)
+            .json(response("Unable to create the user", {}, config.badRequestStatusCode));
+    }
+});
+exports.createUser = createUser;
+const checkEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield userModel_1.default.findOne({ email: email });
+        return users;
+    }
+    catch (error) {
+        return null;
+    }
+});
+const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log(req.body.email);
+        const users = yield userModel_1.default.findOne({ email: req.body.email });
+        console.log(users);
+        if (!users) {
+            return res
+                .status(config.badRequestStatusCode)
+                .json(response("user not exist", req.body, config.successStatusCode));
+        }
+        if (!(yield bcrypt.compare(req.body.password, users.password))) {
+            return res
+                .status(config.badRequestStatusCode)
+                .json(response("Invalid password", req.body, config.badRequestStatusCode));
+        }
+        return res
+            .status(config.successStatusCode)
+            .json(response("Users returned successfully", [createToken(users), users.userName], config.successStatusCode));
+    }
+    catch (error) {
+        return res
+            .status(config.badRequestStatusCode)
+            .json(response("Unable to login", {}, config.badRequestStatusCode));
+    }
+});
+exports.login = login;
+const postForgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield userModel_1.default.findOne({ email: req.body.email });
+        if (!users) {
+            return res
+                .status(config.badRequestStatusCode)
+                .json(response("user not exist", req.body, config.successStatusCode));
+        }
+        const token = createToken(users);
+        console.log(token);
+        const itoken = new tokenModel_1.default({ email: req.body.email, token: token.token });
+        const newToken = yield itoken.save();
+        if (users) {
+            sendMail(req.body.email, token.token, 'New Password');
+        }
+        return res
+            .status(config.successStatusCode)
+            .json(response("Users returned successfully", [token, users.userName], config.successStatusCode));
+    }
+    catch (error) {
+        return res
+            .status(config.badRequestStatusCode)
+            .json(response("Unable to login", {}, config.badRequestStatusCode));
+    }
+});
+exports.postForgotPassword = postForgotPassword;
+let response = (message, data, status) => {
+    return { message, data, status };
+};
+const createToken = (user) => {
+    const expiresIn = '30m';
+    const secret = config.jwtSecret;
+    return {
+        expiresIn,
+        token: jwt.sign({ id: user._id, email: user.email, userName: user.userName }, secret, { expiresIn }),
+    };
+};
+let sendMail = (email, token, subject) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'demotest5597@gmail.com',
+                pass: 'demotest143'
+            }
+        });
+        let Link = "http://localhost:4200/resetPassword";
+        var mailOptions = {
+            from: 'agchetz@gmail.com',
+            to: email,
+            subject: 'New Password',
+            text: `Hi,
+
+          Greetings.
+
+          Your Orders Password was successfully reseted. You can create a new password by clicking on this link.
+          Link: ${Link}/${token}`
+        };
+        yield transporter.sendMail(mailOptions);
+    }
+    catch (error) {
+        return console.log(error);
+    }
+});
+let checkUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let token = req.params.token;
+        (0, checkJwt_1.tokenVerify)(req, res);
+        return res
+            .status(config.successStatusCode)
+            .json(response("Authorized user", {}, config.successStatusCode));
+    }
+    catch (error) {
+        console.log(error);
+        return res
+            .status(config.badRequestStatusCode)
+            .json(response("Unauthorized user", {}, config.badRequestStatusCode));
+    }
+});
+exports.checkUser = checkUser;
+let updatePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const token = req.params.token;
+        const password = bcrypt.hashSync(req.body.password.toString(), 10);
+        let user_id = yield (0, checkJwt_1.tokenVerify)(req, res);
+        console.log(user_id);
+        let change = yield userModel_1.default.findOneAndUpdate({ _id: user_id }, { password });
+        res
+            .status(config.successStatusCode)
+            .json(response("Password Changed", {}, config.successStatusCode));
+    }
+    catch (error) {
+        console.error(error);
+        res
+            .status(config.badRequestStatusCode)
+            .json(response("Unable to change  the password", {}, config.badRequestStatusCode));
+    }
+});
+exports.updatePassword = updatePassword;
+// const forgotPassword = async (req: Request, res: Response): Promise<any> => {
+//   const { email } = req.body;
+//   const password = Math.floor(Math.random() * 10000000000);
+//   authModel.findOneAndUpdate({ email: email }, {password: password}, (error, data) => {
+//       if (error) {
+//           res.json({ success: false, statusCode: 500, message: "Internal Server Problem, update failed" })
+//       } else {
+//           if(data){
+//               getter.sendMail(email, password, "New Password").then( data => {
+//                   res.json({ success: true, statusCode:200, message: "Password changed, Check Your mail for New Password !!!"})
+//               }).catch(error => {
+//                   res.json({ success: false, statusCode: 500, message: "Error Occurred" })    
+//               })
+//           } else {
+//               res.json({ success: false, statusCode: 404, message: "No user Found" })
+//           }
+//       }
+//   })
+// }
+// }
+let getForgotPassword = () => { };
+let postResetPassword = () => { };
+let getResetPassword = () => { };

@@ -60,7 +60,23 @@ export class BaseService {
     });
   }
 
+  submitEmail(body:string){
+    return this._http.post(`${environment.serverAddress}/forgotPassword`, body,{
+      observe:'body'
+    });
+}
 
+  checkUser(token:any){
+    return this._http.post(`${environment.serverAddress}/resetPassword/${token}`,{
+      observe:'body'
+    })
+  }
+
+  updatePassword(token:any, body:any){
+    return this._http.post(`${environment.serverAddress}/confirm-reset-password/${token}`, body,{
+      observe:'body'
+    });
+}
 
 }
 

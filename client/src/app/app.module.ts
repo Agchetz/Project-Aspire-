@@ -1,23 +1,20 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ToastrModule } from 'ngx-toastr';
 import { AppRoutingModule, routingComponents } from './app-routing.module';
 import { AppComponent } from './app.component';
-
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
 import { BaseService } from './Shared/baseService';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { MaterialsModule } from './materials/materials.module';
-import { ToastrModule } from 'ngx-toastr';
-
 import { HeaderComponent } from './component/header/header.component';
 import { FooterComponent } from './component/footer/footer.component';
 import { InterceptorService } from './Shared/interceptor.service';
 import { AuthServiceService } from './Shared/auth-service.service';
 import { DynamicGridComponent } from './Shared/dynamic-grid/dynamic-grid.component';
+import { ForgotPasswordComponent } from './component/userComponent/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './component/userComponent/reset-password/reset-password.component';
 
 
 @NgModule({
@@ -27,6 +24,8 @@ import { DynamicGridComponent } from './Shared/dynamic-grid/dynamic-grid.compone
     HeaderComponent,
     FooterComponent,
     DynamicGridComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent,
     
   ],
   imports: [

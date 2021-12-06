@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CdkTableModule } from '@angular/cdk/table';
+import {MatDialogModule} from '@angular/material/dialog';
 
 
 const materials = [
@@ -21,6 +22,7 @@ const materials = [
   MatSelectModule,
   MatButtonModule,
   CdkTableModule,
+  MatDialogModule
 ];
 
 @NgModule({

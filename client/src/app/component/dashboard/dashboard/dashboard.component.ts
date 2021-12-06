@@ -14,18 +14,20 @@ export class DashboardComponent implements OnInit {
 
   public chartStatus = true;
   public myChart!: Chart;
-  private temp_Chart!: Array<number>;
   public totalOrders!: number;
 
   constructor(private myservice: BaseService, private toastr: ToastrService) {
-    this.loadChartData()
   }
 
-  ngOnInit(): void { this.getTotalOrders() }
+  ngOnInit(): void { 
+    this.loadChartData()
+    this.getTotalOrders() 
+  }
 
   loadChartData() {
     this.myservice.getOrderstatus().subscribe(
       (data) =>{
+        console.log(data)
         let chartValues:orderTestStatus[] = data;
         let values = chartValues.map(data => data.total);
         let columns = chartValues.map(data => data._id);
@@ -35,6 +37,8 @@ export class DashboardComponent implements OnInit {
     )}
 
   ChartData(values: number[], columns: string[]) {
+    
+    console.log(values)
     if (this.chartStatus) {
       this.myChart = new Chart('canvas', {
         type: 'bar',
@@ -42,7 +46,7 @@ export class DashboardComponent implements OnInit {
           labels: columns,
           datasets: [
             {
-              label: 'Order Status ',
+              label: 'Orders',
               data: values,
               backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
