@@ -18,7 +18,8 @@ export class RegistrationComponent {
       phoneNumber: ['',[Validators.required, Validators.pattern(regex.numberValidator)]],
       email: ['', [Validators.required, Validators.pattern(regex.emailRegex)]],
       password: ['',[Validators.required,Validators.pattern(regex.passwordRegex),]],
-      confirmPassword: ['', Validators.required]
+      confirmPassword: ['', Validators.required],
+      role: ['', Validators.required]
     },{ validator: PasswordValidator }
   );
 
@@ -37,7 +38,7 @@ export class RegistrationComponent {
     if (this.registrationForm.valid) {
       this.myService.submitRegister(this.registrationForm.value).subscribe(
         (data) => {
-          this.router.navigateByUrl('/login'),
+            this.router.navigateByUrl('/login'),
             this.toastr.success('Registered succesfully');
         },
         (error) =>{

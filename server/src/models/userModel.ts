@@ -20,8 +20,9 @@ const userSchema: Schema = new Schema(
       type: String,
       required: true,
     },
-    token: {
+    role: {
       type: String,
+      required: true,
     }
   },
   { timestamps: true }

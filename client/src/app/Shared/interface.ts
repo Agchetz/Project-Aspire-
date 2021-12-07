@@ -46,3 +46,8 @@ export interface orderTestStatus
     _id: string,
     total: number 
   }[]
+
+export interface userModel {
+  email: string
+  role: string[]
+}

@@ -41,12 +41,10 @@ export class ForgotPasswordComponent implements OnInit {
     if (this.loginForm.valid) {
       this.dialogFlag = true;
       this.passwordFlag = false;
-      console.log(this.dialogFlag, this.passwordFlag);
       this.myService.submitEmail(this.loginForm.value).subscribe(
         (data) => {
           this.toastr.success('Password reset link has been sent to your mail. Please check your mail.');
           this.passwordFlag = false;
-          console.log(this.passwordFlag);
         },
         (error) => {
           this.toastr.error(error.error.message);

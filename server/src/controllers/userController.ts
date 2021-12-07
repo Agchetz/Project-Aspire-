@@ -32,13 +32,14 @@ const createUser = async (req: Request, res: Response): Promise<any> => {
   try {
     const body = req.body as Pick<
       IUser,
-      "userName" | "phoneNumber" | "email" | "password"
+      "userName" | "phoneNumber" | "email" | "password" | "role"
     >;
     const user: IUser = new User({
       userName: body.userName,
       phoneNumber: body.phoneNumber,
       email: body.email,
       password: bcrypt.hashSync(body.password.toString(), 10),
+      role: body.role
     });
     let userExist: null | object;
     userExist = await checkEmail(body.email);
@@ -50,9 +51,15 @@ const createUser = async (req: Request, res: Response): Promise<any> => {
         );
     }
     const newUser: IUser = await user.save();
+    if(user.role === "Admin"){
+      return res
+      .status(config.successStatusCode)
+      .json(response("Admin added", newUser, config.successStatusCode));
+    }if(user.role === "Customer"){
     return res
       .status(config.successStatusCode)
-      .json(response("User added", newUser, config.successStatusCode));
+      .json(response("Customer added", newUser, config.successStatusCode));
+    }
   } catch (error) {
     return res
       .status(config.badRequestStatusCode)
@@ -144,7 +151,7 @@ const createToken = (user: any): any => {
   const secret = config.jwtSecret;
   return {
     expiresIn,
-    token: jwt.sign({ id: user._id, email: user.email, userName: user.userName }, secret, { expiresIn }),
+    token: jwt.sign({ id: user._id, email: user.email, userName: user.userName, role: user.role }, secret, { expiresIn }),
   };
 };
 
@@ -213,32 +220,6 @@ let updatePassword = async (req:Request, res: Response):Promise<any> => {
       );
   }
 }
-
-// const forgotPassword = async (req: Request, res: Response): Promise<any> => {
-//   const { email } = req.body;
-//   const password = Math.floor(Math.random() * 10000000000);
-//   authModel.findOneAndUpdate({ email: email }, {password: password}, (error, data) => {
-//       if (error) {
-//           res.json({ success: false, statusCode: 500, message: "Internal Server Problem, update failed" })
-//       } else {
-//           if(data){
-//               getter.sendMail(email, password, "New Password").then( data => {
-//                   res.json({ success: true, statusCode:200, message: "Password changed, Check Your mail for New Password !!!"})
-//               }).catch(error => {
-//                   res.json({ success: false, statusCode: 500, message: "Error Occurred" })    
-//               })
-              
-//           } else {
-//               res.json({ success: false, statusCode: 404, message: "No user Found" })
-//           }
-//       }
-//   })
-// }
-// }
-
-let getForgotPassword = () => {}
-let postResetPassword = () => {}
-let getResetPassword = () => {}
 
 
 
