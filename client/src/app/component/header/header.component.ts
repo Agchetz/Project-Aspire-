@@ -45,6 +45,6 @@ export class HeaderComponent implements OnInit {
     this.userName = '';
     setTimeout(()=>{
       location.reload()
-    },1000)
+    },500)
   }
 }
