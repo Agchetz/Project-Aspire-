@@ -43,5 +43,8 @@ export class HeaderComponent implements OnInit {
     this.toastr.error('successfully logged out');
     this.logoutStatus = false;
     this.userName = '';
+    setTimeout(()=>{
+      location.reload()
+    },1000)
   }
 }

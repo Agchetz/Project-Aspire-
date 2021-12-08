@@ -28,20 +28,31 @@ export class OrderListComponent implements OnInit, AfterViewInit {
   public data!: MatTableDataSource<Object>;
   private rows!: orderModel[];
   private temp!: orderDetailsModel[] ;
+  roleStatus!: boolean;
+  // public check!:boolean
 
 constructor(
-  private myservice: BaseService, 
+  private myService: BaseService, 
   private router: Router,
   private toastr: ToastrService
-  ){}
+  ){
+    // this.getRoleStatus()
+    }
 
    ngOnInit(){
      this.loadTableData()
+     this.getStatus()
     }
 
     ngAfterViewInit() {
       this.data.paginator = this.paginator;
       this.data.sort = this.sort;
+    }
+
+    getStatus(){
+      this.myService.adminRole.subscribe(data => {
+        this.roleStatus = data
+      })
     }
 
     loadTableData(){
@@ -54,7 +65,7 @@ constructor(
 
     updateOrder(row:orderModel) {
       let data:Number = this.temp[row.id - 1]._id
-      this.myservice.behaviourSubject.next(this.temp[row.id - 1]);
+      this.myService.behaviourSubject.next(this.temp[row.id - 1]);
       this.router.navigateByUrl('/order/update/' + data);
     }
 
@@ -62,7 +73,7 @@ constructor(
       if (window.confirm('Are you sure you want to delete this order')) {
         this.toastr.success('Deleted the order successfully');
         let data:Number = this.temp[row.id - 1]._id
-        this.myservice.deleteorder(data).subscribe(
+        this.myService.deleteorder(data).subscribe(
           (data) => {window.location.reload()},
           (error) => this.toastr.error(error.error.message,'Unable to delete an Order')
         )}

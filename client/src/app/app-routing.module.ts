@@ -11,6 +11,7 @@ import { DynamicGridComponent } from './Shared/dynamic-grid/dynamic-grid.compone
 import { ForgotPasswordComponent } from './component/userComponent/forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './component/userComponent/reset-password/reset-password.component';
 import { RoleGuardGuard } from './Shared/role-guard.guard';
+import { HideForRolesDirective } from './Shared/directives/hide-for-roles.directive';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -20,9 +21,6 @@ const routes: Routes = [
     path: 'order/create',
     component: OrderCreateComponent,
     canActivate: [AuthGuard, RoleGuardGuard],
-    data: {
-      role:'Admin'
-    }
   },
   {
     path: 'order/update/:id',
@@ -34,10 +32,7 @@ const routes: Routes = [
     component: DynamicGridComponent,
     canActivate: [AuthGuard],
   },
-  { path: 'home', 
-    component: DashboardComponent, 
-    canActivate: [AuthGuard] 
-  },
+  { path: 'home', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'forgotPassword', component: ForgotPasswordComponent },
   { path: 'resetPassword/:token', component: ResetPasswordComponent },
   { path: '**', component: PageNotFoundComponent },

@@ -14,8 +14,7 @@ import { InterceptorService } from './Shared/interceptor.service';
 import { AuthServiceService } from './Shared/auth-service.service';
 import { DynamicGridComponent } from './Shared/dynamic-grid/dynamic-grid.component';
 import { ForgotPasswordComponent } from './component/userComponent/forgot-password/forgot-password.component';
-import { ResetPasswordComponent } from './component/userComponent/reset-password/reset-password.component';
-
+import { HideForRolesDirective } from './Shared/directives/hide-for-roles.directive';
 
 @NgModule({
   declarations: [
@@ -25,11 +24,10 @@ import { ResetPasswordComponent } from './component/userComponent/reset-password
     FooterComponent,
     DynamicGridComponent,
     ForgotPasswordComponent,
-    ResetPasswordComponent,
-    
+    HideForRolesDirective
   ],
   imports: [
-    BrowserModule,
+    BrowserModule,  
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
@@ -42,7 +40,7 @@ import { ResetPasswordComponent } from './component/userComponent/reset-password
       progressAnimation: "increasing",
       preventDuplicates: true,
       closeButton: true
-    })
+    }),
   ],
   providers: [BaseService,AuthServiceService,
      {
@@ -51,6 +49,6 @@ import { ResetPasswordComponent } from './component/userComponent/reset-password
     multi: true
   }
 ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

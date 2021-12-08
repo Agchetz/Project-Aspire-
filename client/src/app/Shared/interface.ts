@@ -36,7 +36,7 @@ export interface orderDetailsModel {
 
 export interface loginDetails {
   data: 
-    [{ expiresIn: number, token: string }, string];
+    [{ expiresIn: number, token: string }, string, string];
     message: string;
     status: number;
 }

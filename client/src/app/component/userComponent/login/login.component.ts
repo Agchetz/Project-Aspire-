@@ -3,8 +3,8 @@ import { Validators, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { BaseService } from 'src/app/Shared/baseService';
+import { roleGroups } from 'src/app/Shared/directives/roleGroups';
 import { loginDetails } from 'src/app/Shared/interface';
-
 
 @Component({
   selector: 'app-login',
@@ -23,8 +23,8 @@ export class LoginComponent {
     private fb: FormBuilder,
     private router: Router,
     private myService: BaseService,
-    private toastr: ToastrService
-  ) {}
+    private toastr: ToastrService,
+  ) { }
 
   get email() {
     return this.loginForm.controls.email;

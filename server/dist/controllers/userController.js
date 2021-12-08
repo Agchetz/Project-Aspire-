@@ -97,7 +97,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         return res
             .status(config.successStatusCode)
-            .json(response("Users returned successfully", [createToken(users), users.userName], config.successStatusCode));
+            .json(response("Users returned successfully", [createToken(users), users.userName, users.role], config.successStatusCode));
     }
     catch (error) {
         return res
@@ -157,11 +157,12 @@ let sendMail = (email, token, subject) => __awaiter(void 0, void 0, void 0, func
             from: 'agchetz@gmail.com',
             to: email,
             subject: 'New Password',
-            text: `Hi,
+            text: `
+          Hi,
 
           Greetings.
 
-          Your Orders Password was successfully reseted. You can create a new password by clicking on this link.
+          Your password link is generated. You can create a new password by clicking on this link. It will be valid for 30mins only.
           Link: ${Link}/${token}`
         };
         yield transporter.sendMail(mailOptions);

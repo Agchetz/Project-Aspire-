@@ -2,13 +2,13 @@
   <div class="mini-card">
     <p>The total number of orders is {{ totalOrders }}</p>
   </div>
-  <div class="mini-card">
+  <div *ngIf="roleStatus" class="mini-card">
     <p>
       Create your own choice and set of orders
       <a routerLink="/order/create"> Click here</a>
     </p>
   </div>
-  <div class="mini-card">
+  <div *ngIf="roleStatus" class="mini-card">
     <p>
       List of your orders is one click away
       <a routerLink="/order/list"> Click here</a>

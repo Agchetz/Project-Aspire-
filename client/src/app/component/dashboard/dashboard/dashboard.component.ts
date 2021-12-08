@@ -15,19 +15,25 @@ export class DashboardComponent implements OnInit {
   public chartStatus = true;
   public myChart!: Chart;
   public totalOrders!: number;
+  public roleStatus!: boolean ;
 
-  constructor(private myservice: BaseService, private toastr: ToastrService) {
-  }
+  constructor(private myservice: BaseService, private toastr: ToastrService) { }
 
   ngOnInit(): void { 
     this.loadChartData()
     this.getTotalOrders() 
+    this.getStatus()
+  }
+
+  getStatus(){
+    this.myservice.adminRole.subscribe(data => {
+      this.roleStatus = data
+    })
   }
 
   loadChartData() {
     this.myservice.getOrderstatus().subscribe(
       (data) =>{
-        console.log(data)
         let chartValues:orderTestStatus[] = data;
         let values = chartValues.map(data => data.total);
         let columns = chartValues.map(data => data._id);
@@ -36,9 +42,7 @@ export class DashboardComponent implements OnInit {
       (error) => { this.toastr.error(error.error.message, 'Error loading the Chart') }
     )}
 
-  ChartData(values: number[], columns: string[]) {
-    
-    console.log(values)
+  ChartData(values: number[], columns: string[]) {    
     if (this.chartStatus) {
       this.myChart = new Chart('canvas', {
         type: 'bar',

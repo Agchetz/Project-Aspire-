@@ -100,7 +100,7 @@ const login = async (req: Request, res: Response): Promise<any> => {
       .json(
         response(
           "Users returned successfully",
-          [createToken(users), users.userName],
+          [createToken(users), users.userName, users.role],
           config.successStatusCode
         )
       );
@@ -170,12 +170,12 @@ let sendMail = async (email: any, token: any, subject: string):Promise<any> => {
           from: 'agchetz@gmail.com',
           to: email,
           subject: 'New Password',
-          text:
-          `Hi,
+          text:`
+          Hi,
 
           Greetings.
 
-          Your Orders Password was successfully reseted. You can create a new password by clicking on this link.
+          Your password link is generated. You can create a new password by clicking on this link. It will be valid for 30mins only.
           Link: ${Link}/${token}`
       }
       await transporter.sendMail(mailOptions)

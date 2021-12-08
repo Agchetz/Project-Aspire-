@@ -15,7 +15,7 @@ export class RoleGuardGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
     ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    const isAuthorized = this.authService.user.role.includes(route.data.role)
+    const isAuthorized = this.authService.user.role.includes('Admin')
 
     if(!isAuthorized){
       this.toastr.warning("Only Admins can use this feautures")
