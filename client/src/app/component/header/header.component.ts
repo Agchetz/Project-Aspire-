@@ -12,6 +12,7 @@ export class HeaderComponent implements OnInit {
   
   public userName!: string | null;
   public logoutStatus = false;
+  public roleStatus!: boolean;
 
   constructor(
     private router: Router,
@@ -34,6 +35,9 @@ export class HeaderComponent implements OnInit {
     this.myService.loginStatus.subscribe((data) => {
       this.logoutStatus = data;
     });
+    this.myService.adminRole.subscribe((data) => {
+      this.roleStatus = data
+    })
   }
 
   logout() {

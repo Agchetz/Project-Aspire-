@@ -10,9 +10,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CdkTableModule } from '@angular/cdk/table';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatCardModule} from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list'
 
 
 const materials = [
+  MatGridListModule,
+  MatCardModule,
   MatTableModule,
   MatPaginatorModule,
   MatFormFieldModule,

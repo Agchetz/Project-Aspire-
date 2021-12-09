@@ -29,15 +29,12 @@ export class OrderListComponent implements OnInit, AfterViewInit {
   private rows!: orderModel[];
   private temp!: orderDetailsModel[] ;
   roleStatus!: boolean;
-  // public check!:boolean
 
 constructor(
   private myService: BaseService, 
   private router: Router,
   private toastr: ToastrService
-  ){
-    // this.getRoleStatus()
-    }
+  ) { }
 
    ngOnInit(){
      this.loadTableData()

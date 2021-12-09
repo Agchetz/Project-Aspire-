@@ -15,6 +15,7 @@ import { AuthServiceService } from './Shared/auth-service.service';
 import { DynamicGridComponent } from './Shared/dynamic-grid/dynamic-grid.component';
 import { ForgotPasswordComponent } from './component/userComponent/forgot-password/forgot-password.component';
 import { HideForRolesDirective } from './Shared/directives/hide-for-roles.directive';
+import { ProductListComponent } from './component/product/product-list/product-list.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { HideForRolesDirective } from './Shared/directives/hide-for-roles.direct
     FooterComponent,
     DynamicGridComponent,
     ForgotPasswordComponent,
-    HideForRolesDirective
+    HideForRolesDirective,
+    ProductListComponent
   ],
   imports: [
     BrowserModule,  

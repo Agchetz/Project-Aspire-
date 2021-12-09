@@ -38,7 +38,8 @@ export class DynamicGridComponent implements OnInit {
       price: element.price,
       stock: element.stock,
       address: element.address,
-    };
+    };    
+
   })
   }
   
