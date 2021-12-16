@@ -8,6 +8,7 @@ export interface IOrder extends Document {
   stock: String;
   price: number;
   address: String;
+  image: String;
   status: Enumerator;
 }
 

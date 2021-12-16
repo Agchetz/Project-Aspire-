@@ -16,6 +16,7 @@ import { DynamicGridComponent } from './Shared/dynamic-grid/dynamic-grid.compone
 import { ForgotPasswordComponent } from './component/userComponent/forgot-password/forgot-password.component';
 import { HideForRolesDirective } from './Shared/directives/hide-for-roles.directive';
 import { ProductListComponent } from './component/product/product-list/product-list.component';
+import { CartComponent } from './component/product/cart/cart.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { ProductListComponent } from './component/product/product-list/product-l
     DynamicGridComponent,
     ForgotPasswordComponent,
     HideForRolesDirective,
-    ProductListComponent
+    ProductListComponent,
+    CartComponent
   ],
   imports: [
     BrowserModule,  

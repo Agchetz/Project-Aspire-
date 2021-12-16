@@ -27,6 +27,14 @@ const orderValidator = (): ValidationChain[] => [
   check("status").notEmpty().withMessage("status is required"),
 ];
 
+const productValidator = (): ValidationChain[] => [
+  check("product").notEmpty().withMessage("product is required"),
+  check("department").notEmpty().withMessage("field is required"),
+  check("quantity").notEmpty().withMessage("quantity is required"),
+  check("price").notEmpty().withMessage("price is required"),
+  check("id").notEmpty().withMessage("id is required"),
+];
+
 const validateInput = (req: Request, res: Response, next: NextFunction) => {
   const errors: Result<ValidationError> = validationResult(req);
   const messages: ValidationError[] = [];
@@ -47,4 +55,4 @@ const validateInput = (req: Request, res: Response, next: NextFunction) => {
   }
   return next();
 };
-export { loginValidator, validateInput, orderValidator, registerValidator };
+export { loginValidator, validateInput, orderValidator, registerValidator, productValidator };

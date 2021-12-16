@@ -13,6 +13,9 @@ const PORT = process.env.NODE_PORT;
 const DB = process.env.MONGO_DB;
 const http = process.env.PORT_HTTP;
 const host = process.env.PORT_HOST;
+// app.use(bodyParser.urlencoded({ extended: false })); // Parses urlencoded bodies
+// app.use(bodyParser.json());
+app.use(express_1.default.urlencoded({ extended: false }));
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 app.use(routes_1.default);

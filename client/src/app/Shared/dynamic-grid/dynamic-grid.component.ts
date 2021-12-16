@@ -22,7 +22,7 @@ export class DynamicGridComponent implements OnInit {
 
   loadTableData(){
     this.myservice.getOrder().subscribe(
-    (data) => { this.getTableData(data) }, 
+    (data) => { this.getTableData(data),console.log(data) }, 
     (error) => { this.toastr.error(error.error.message,'Unable to fetch data') }
     )}
 

@@ -32,6 +32,8 @@
         <option>Food</option>
         <option>Sports</option>
         <option>Home Decors</option>
+        <option>Stationary</option>
+        <option>Others</option>
       </select>
     </div>
 
@@ -75,6 +77,10 @@
       ></textarea>
     </div>
 
+    <div class="form-group" style="margin-bottom: 15px">
+      <input formControlName="image" id="input-b5" name="input-b5[]" type="file" multiple>
+    </div>
+
     <div class="pt-1 mb-4">
       <button
         *ngIf="updateForm"
@@ -97,3 +103,5 @@
     </div>
   </form>
 </div>
+
+

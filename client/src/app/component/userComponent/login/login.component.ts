@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { BaseService } from 'src/app/Shared/baseService';
-import { roleGroups } from 'src/app/Shared/directives/roleGroups';
 import { loginDetails } from 'src/app/Shared/interface';
 
 @Component({
@@ -11,9 +10,11 @@ import { loginDetails } from 'src/app/Shared/interface';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
 
   private user!: any;
+  public roleStatus!: boolean;
+
   public loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
@@ -25,6 +26,17 @@ export class LoginComponent {
     private myService: BaseService,
     private toastr: ToastrService,
   ) { }
+
+
+  ngOnInit() {
+    this.role()
+  }
+
+  role(){
+    this.myService.adminRole.subscribe((data) => {
+    this.roleStatus = data
+    })
+  }
 
   get email() {
     return this.loginForm.controls.email;
@@ -54,6 +66,10 @@ export class LoginComponent {
     this.myService.loginStatus.next(true);
     this.toastr.success(data.message, 'Login Successfull');
     this.router.navigate(['/home']);
+    if(data.data[2] === 'Customer'){
+      this.router.navigate(['/product-list']);
+
+    }
   }
 }
   

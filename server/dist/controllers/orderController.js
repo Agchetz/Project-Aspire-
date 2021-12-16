@@ -41,6 +41,7 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     let user = res.locals.jwtPayload;
     try {
         const order = new orderModel_1.default(req.body);
+        console.log(req.body);
         const newOrder = yield order.save();
         res
             .status(201)

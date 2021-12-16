@@ -22,6 +22,7 @@ export class OrderCreateComponent implements OnInit {
     price: ['', Validators.required],
     address: ['', Validators.required],
     status: ['', Validators.required],
+    image: ['', Validators.required],
   });
 
   constructor(

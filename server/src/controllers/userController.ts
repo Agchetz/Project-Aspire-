@@ -54,11 +54,11 @@ const createUser = async (req: Request, res: Response): Promise<any> => {
     if(user.role === "Admin"){
       return res
       .status(config.successStatusCode)
-      .json(response("Admin added", newUser, config.successStatusCode));
+      .json(response("New admin added", newUser, config.successStatusCode));
     }if(user.role === "Customer"){
     return res
       .status(config.successStatusCode)
-      .json(response("Customer added", newUser, config.successStatusCode));
+      .json(response("New customer added", newUser, config.successStatusCode));
     }
   } catch (error) {
     return res
@@ -147,7 +147,7 @@ let response = (message: string, data: any, status: number) => {
 };
 
 const createToken = (user: any): any => {
-  const expiresIn = '30m';
+  const expiresIn = '2h';
   const secret = config.jwtSecret;
   return {
     expiresIn,

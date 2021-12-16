@@ -28,6 +28,7 @@ const createOrder = async (req: Request, res: Response): Promise<void> => {
   let user = res.locals.jwtPayload;
   try {
     const order: IOrder = new Order(req.body);
+    console.log(req.body)
     const newOrder: IOrder = await order.save();
     res
       .status(201)

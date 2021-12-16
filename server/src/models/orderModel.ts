@@ -36,6 +36,9 @@ const orderSchema: Schema = new Schema(
       enum: ["ordered", "packed", "dispatched", "delivered"],
       required: true,
     },
+    image: {
+      type: String 
+    }
   },
   { timestamps: true }
 );

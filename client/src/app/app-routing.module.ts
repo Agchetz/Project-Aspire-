@@ -13,6 +13,7 @@ import { ResetPasswordComponent } from './component/userComponent/reset-password
 import { RoleGuardGuard } from './Shared/role-guard.guard';
 import { HideForRolesDirective } from './Shared/directives/hide-for-roles.directive';
 import { ProductListComponent } from './component/product/product-list/product-list.component';
+import { CartComponent } from './component/product/cart/cart.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -31,12 +32,16 @@ const routes: Routes = [
   {
     path: 'order/list',
     component: DynamicGridComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, RoleGuardGuard],
   },
   {
     path: 'product-list',
     component: ProductListComponent,
     canActivate: [AuthGuard],
+  },
+  {path: 'cart',
+  component: CartComponent,
+  canActivate: [AuthGuard],
   },
   { path: 'home', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'forgotPassword', component: ForgotPasswordComponent },

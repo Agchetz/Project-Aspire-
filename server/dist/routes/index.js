@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const orderController_1 = require("../controllers/orderController");
+const productController_1 = require("../controllers/productController");
 const userController_1 = require("../controllers/userController");
 const checkJwt_1 = require("../middleware/checkJwt");
 const validator = require('../validations/validator');
@@ -12,6 +13,11 @@ router.post('/updateorder', [checkJwt_1.checkJwt], orderController_1.updateOrder
 router.put('/deleteorder', [checkJwt_1.checkJwt], orderController_1.deleteOrder);
 router.get('/orderId/:id', [checkJwt_1.checkJwt], orderController_1.orderId);
 router.get('/orderstatus', [checkJwt_1.checkJwt], orderController_1.getOrderStatus);
+router.get('/product-list', [checkJwt_1.checkJwt], productController_1.getProduct);
+router.post('/cart', [checkJwt_1.checkJwt], productController_1.addToCart);
+router.post('/updateCart', [checkJwt_1.checkJwt], productController_1.updateCart);
+router.get('/getCartProducts', [checkJwt_1.checkJwt], productController_1.getCartProducts);
+router.put('/deleteProduct', [checkJwt_1.checkJwt], productController_1.deleteProduct);
 router.get('/getuser', userController_1.getUser);
 router.post('/user', [validator.registerValidator(), validator.validateInput], userController_1.createUser);
 router.post('/signup', [validator.registerValidator(), validator.validateInput], userController_1.createUser);

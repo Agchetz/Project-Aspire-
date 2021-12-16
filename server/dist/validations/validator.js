@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerValidator = exports.orderValidator = exports.validateInput = exports.loginValidator = void 0;
+exports.productValidator = exports.registerValidator = exports.orderValidator = exports.validateInput = exports.loginValidator = void 0;
 const express_validator_1 = require("express-validator");
 const config = require("../config/config");
 const registerValidator = () => [
@@ -28,6 +28,14 @@ const orderValidator = () => [
     (0, express_validator_1.check)("status").notEmpty().withMessage("status is required"),
 ];
 exports.orderValidator = orderValidator;
+const productValidator = () => [
+    (0, express_validator_1.check)("product").notEmpty().withMessage("product is required"),
+    (0, express_validator_1.check)("department").notEmpty().withMessage("field is required"),
+    (0, express_validator_1.check)("quantity").notEmpty().withMessage("quantity is required"),
+    (0, express_validator_1.check)("price").notEmpty().withMessage("price is required"),
+    (0, express_validator_1.check)("id").notEmpty().withMessage("id is required"),
+];
+exports.productValidator = productValidator;
 const validateInput = (req, res, next) => {
     const errors = (0, express_validator_1.validationResult)(req);
     const messages = [];

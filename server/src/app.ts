@@ -1,6 +1,7 @@
 require("dotenv").config({ path: ".env" });
 import express, { Express } from "express";
 import mongoose from "mongoose";
+import bodyParser from "body-parser";
 import cors from "cors";
 import routes from "./routes";
 
@@ -10,6 +11,11 @@ const DB: string = process.env.MONGO_DB!;
 const http: string = process.env.PORT_HTTP!;
 const host: string = process.env.PORT_HOST!;
 
+// app.use(bodyParser.urlencoded({ extended: false })); // Parses urlencoded bodies
+// app.use(bodyParser.json());
+
+
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 app.use(routes);

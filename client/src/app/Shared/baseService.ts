@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { orderDetailsModel, orderModel, newUserModel, loginModel, loginDetails, orderTestStatus } from './interface';
+import { orderDetailsModel, orderModel, newUserModel, loginModel, loginDetails, orderTestStatus, productModel } from './interface';
 import { environment } from 'src/environments/environment';
 
 @Injectable()
@@ -13,6 +13,10 @@ export class BaseService {
   public adminRole = new BehaviorSubject<boolean> (false)
 
   constructor(private http: HttpClient) { }
+
+  getProduct():Observable<orderDetailsModel[]>{
+    return this.http.get<orderDetailsModel[]>(`${environment.serverAddress}/product-list`)
+  };
 
   submitRegister(body:newUserModel){
     return this.http.post(`${environment.serverAddress}/signup`, body,{
@@ -78,6 +82,26 @@ export class BaseService {
       observe:'body'
     });
 }
+
+addToCart(cartItems:productModel){
+  console.log(cartItems)
+  return this.http.post(`${environment.serverAddress}/cart`, cartItems,{
+  })
+}
+
+updateCart(value:productModel){
+  return this.http.post(`${environment.serverAddress}/updateCart`, value)
+};
+
+getCartProducts():Observable<productModel[]>{
+  return this.http.get<productModel[]>(`${environment.serverAddress}/getCartProducts`)
+};
+
+deleteProduct(body:productModel){
+  return this.http.put(`${environment.serverAddress}/deleteProduct`, body ,{
+    observe:'body'
+  })
+};
 
 }
 

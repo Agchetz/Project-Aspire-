@@ -30,6 +30,7 @@ export interface orderDetailsModel {
   address: String;
   updatedAt: Date;
   user_id: Number;
+  image: File;
   __v: Number;
   _id: Number;
 }
@@ -50,4 +51,14 @@ export interface orderTestStatus
 export interface userModel {
   email: string
   role: string[]
+}
+
+export interface productModel {
+  id: number,
+  product: String,
+  department: String,
+  quantity: Number,
+  price: Number,
+  user_id: String,
+  image: File
 }

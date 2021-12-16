@@ -56,12 +56,12 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (user.role === "Admin") {
             return res
                 .status(config.successStatusCode)
-                .json(response("Admin added", newUser, config.successStatusCode));
+                .json(response("New admin added", newUser, config.successStatusCode));
         }
         if (user.role === "Customer") {
             return res
                 .status(config.successStatusCode)
-                .json(response("Customer added", newUser, config.successStatusCode));
+                .json(response("New customer added", newUser, config.successStatusCode));
         }
     }
     catch (error) {
@@ -136,7 +136,7 @@ let response = (message, data, status) => {
     return { message, data, status };
 };
 const createToken = (user) => {
-    const expiresIn = '30m';
+    const expiresIn = '2h';
     const secret = config.jwtSecret;
     return {
         expiresIn,
