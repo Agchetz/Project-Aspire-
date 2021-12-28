@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { orderDetailsModel, orderModel, newUserModel, loginModel, loginDetails, orderTestStatus, productModel } from './interface';
+import { orderDetailsModel, orderModel, newUserModel, loginModel, loginDetails, orderTestStatus, productModel, cartOrder } from './interface';
 import { environment } from 'src/environments/environment';
 
 @Injectable()
@@ -83,24 +83,40 @@ export class BaseService {
     });
 }
 
-addToCart(cartItems:productModel){
-  console.log(cartItems)
+  addToCart(cartItems:productModel){  
   return this.http.post(`${environment.serverAddress}/cart`, cartItems,{
   })
 }
 
-updateCart(value:productModel){
-  return this.http.post(`${environment.serverAddress}/updateCart`, value)
+  updateCart(value:productModel){
+  return this.http.post(`${environment.serverAddress}/updateCart`, value,)
 };
 
-getCartProducts():Observable<productModel[]>{
+  getCartProducts():Observable<productModel[]>{
   return this.http.get<productModel[]>(`${environment.serverAddress}/getCartProducts`)
 };
 
-deleteProduct(body:productModel){
+  deleteProduct(body:productModel){
   return this.http.put(`${environment.serverAddress}/deleteProduct`, body ,{
     observe:'body'
   })
+};
+
+  checkout(body:any, total:any){  
+  return this.http.post(`${environment.serverAddress}/checkout`,{ body, total},{
+    observe:'body'
+
+  })
+};
+
+clearCart(body:productModel[]){
+  return this.http.put(`${environment.serverAddress}/clear-cart`, body ,{
+    observe:'body'
+  })
+};
+
+getCartOrders():Observable<productModel[]>{
+  return this.http.get<productModel[]>(`${environment.serverAddress}/getCartDetails`)
 };
 
 }

@@ -1,9 +1,9 @@
-import { Iproduct } from "./../types/product";
+import { Icart } from "./../types/cart";
 import { model, Schema } from "mongoose";
 
+const cartSchema: Schema = new Schema(
+  [{
 
-export const productSchema: Schema = new Schema(
-  {
     image: {
     type: String,
     },
@@ -17,6 +17,8 @@ export const productSchema: Schema = new Schema(
     },
     quantity: {
       type: Number,
+      required: true,
+
     },
     price: {
       type: Number,
@@ -26,8 +28,8 @@ export const productSchema: Schema = new Schema(
       type: String,
       required: true,
     },
-  },
+  },],
   { timestamps: true }
 );
 
-export default model<Iproduct>("Product", productSchema);
+export default model<Icart>("Cart", cartSchema);

@@ -147,7 +147,7 @@ let response = (message: string, data: any, status: number) => {
 };
 
 const createToken = (user: any): any => {
-  const expiresIn = '2h';
+  const expiresIn = '1d';
   const secret = config.jwtSecret;
   return {
     expiresIn,

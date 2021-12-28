@@ -28,7 +28,7 @@ import { CartComponent } from './component/product/cart/cart.component';
     ForgotPasswordComponent,
     HideForRolesDirective,
     ProductListComponent,
-    CartComponent
+    CartComponent,
   ],
   imports: [
     BrowserModule,  

@@ -2,10 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("mongoose");
 const orderSchema = new mongoose_1.Schema({
-    user_id: {
-        type: String,
-        required: true,
-    },
     product: {
         type: String,
         required: true,
@@ -36,7 +32,8 @@ const orderSchema = new mongoose_1.Schema({
         required: true,
     },
     image: {
-        type: String
+        type: String,
+        required: true,
     }
 }, { timestamps: true });
 exports.default = (0, mongoose_1.model)("Order", orderSchema);

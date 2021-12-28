@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.productValidator = exports.registerValidator = exports.orderValidator = exports.validateInput = exports.loginValidator = void 0;
+exports.cartOrder = exports.productValidator = exports.registerValidator = exports.orderValidator = exports.validateInput = exports.loginValidator = void 0;
 const express_validator_1 = require("express-validator");
 const config = require("../config/config");
 const registerValidator = () => [
@@ -26,6 +26,7 @@ const orderValidator = () => [
     (0, express_validator_1.check)("price").notEmpty().withMessage("price is required"),
     (0, express_validator_1.check)("address").notEmpty().withMessage("address is required"),
     (0, express_validator_1.check)("status").notEmpty().withMessage("status is required"),
+    (0, express_validator_1.check)("image").notEmpty().withMessage("image is required"),
 ];
 exports.orderValidator = orderValidator;
 const productValidator = () => [
@@ -33,9 +34,17 @@ const productValidator = () => [
     (0, express_validator_1.check)("department").notEmpty().withMessage("field is required"),
     (0, express_validator_1.check)("quantity").notEmpty().withMessage("quantity is required"),
     (0, express_validator_1.check)("price").notEmpty().withMessage("price is required"),
-    (0, express_validator_1.check)("id").notEmpty().withMessage("id is required"),
+    (0, express_validator_1.check)("image").notEmpty().withMessage("image is required"),
 ];
 exports.productValidator = productValidator;
+const cartOrder = () => [
+    (0, express_validator_1.check)("product").notEmpty().withMessage("product is required"),
+    (0, express_validator_1.check)("department").notEmpty().withMessage("field is required"),
+    (0, express_validator_1.check)("quantity").notEmpty().withMessage("quantity is required"),
+    (0, express_validator_1.check)("price").notEmpty().withMessage("price is required"),
+    (0, express_validator_1.check)("image").notEmpty().withMessage("image is required"),
+];
+exports.cartOrder = cartOrder;
 const validateInput = (req, res, next) => {
     const errors = (0, express_validator_1.validationResult)(req);
     const messages = [];

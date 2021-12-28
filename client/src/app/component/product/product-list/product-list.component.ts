@@ -13,8 +13,6 @@ export class ProductListComponent implements OnInit {
   fullTableData!: orderDetailsModel[];
   tabledata!: any;
   cartItems: productModel[] = []
-  image: any;
-
 
   constructor(private myService: BaseService, private toastr: ToastrService) {}
 
@@ -34,43 +32,26 @@ export class ProductListComponent implements OnInit {
   }
 
   getProduct(data: orderDetailsModel[]) {
+    console.log(data)
     this.fullTableData = data;
-    this.tabledata = data.map((element: orderDetailsModel, index: number) => {
+    this.tabledata = data.map((element: orderDetailsModel) => {
       return {
-        id: 1,
         product: element.product,
         department: element.department,
         quantity: element.quantity,
         price: element.price,
-        user_id: element.user_id,
-        image: (element.image)
+        image: element.image.split("\\")[2],
       };
     });
   }
 
   addToCart(data: productModel) {
-    const productExistInCart = this.cartItems.find(
-          ({ product }) => product === data.product
-        );
-        this.cartItems.push(data)
-        if (!productExistInCart){
-      this.myService.addToCart(data).subscribe(
-        (data) => {
-            this.toastr.success('Order added to the list successfully');
-        },
-        (error) => this.toastr.error(error.error.message,' Adding order failed')
-      )}else{
-        data.id += 1
-        let price:any = data.price
-        data.price += price 
-        this.myService.updateCart(data).subscribe(
-          (data) => {
-              this.toastr.success('Order added to the list successfully');
-          },
-          (error) => this.toastr.error(error.error.message,' Adding order failed')
-        )
-      }
+    console.log(data)
+    this.myService.addToCart(data).subscribe(
+      (data) => {
+        this.toastr.success("product added to the cart")
+      },
+      (error) => {this.toastr.error("Unable to add the product to cart")}
+    )
     }
-
-
 }

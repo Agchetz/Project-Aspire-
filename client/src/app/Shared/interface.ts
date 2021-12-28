@@ -18,6 +18,7 @@ export interface orderModel {
   stock: String;
   price: Number;
   address: String;
+  image: String
 }
 
 export interface orderDetailsModel {
@@ -29,9 +30,7 @@ export interface orderDetailsModel {
   stock: String;
   address: String;
   updatedAt: Date;
-  user_id: Number;
-  image: File;
-  __v: Number;
+  image: String;
   _id: Number;
 }
 
@@ -54,11 +53,19 @@ export interface userModel {
 }
 
 export interface productModel {
-  id: number,
   product: String,
   department: String,
-  quantity: Number,
-  price: Number,
-  user_id: String,
-  image: File
+  quantity: number,
+  price: number,
+  image: String,
+  _id: String
 }
+
+
+export interface cartOrder {
+  image: String;
+  product: String;
+  department: String;
+  price: number;
+  quantity: number
+}[]

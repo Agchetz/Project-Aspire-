@@ -1,8 +1,9 @@
 import { Response, Request } from "express";
-import { Iproduct } from "../types/product";
-import Product from "../models/product";
 import orderModel from "../models/orderModel";
-import { productValidator } from "../validations/validator";
+import { Icart } from "../types/cart";
+import Cart from "../models/cart";
+import { IcartOrder } from "../types/cartOrder";
+import cartOrder from "../models/cartOrder";
 const config = require("../config/config");
 
 const getProduct = async (req: Request, res: Response): Promise<void> => { 
@@ -18,8 +19,8 @@ const getProduct = async (req: Request, res: Response): Promise<void> => {
 const addToCart = async (req: Request, res: Response): Promise<void> => {
   let user = res.locals.jwtPayload;
   try {
-    const product: Iproduct = new Product(req.body);
-    const cartProduct: Iproduct = await product.save();
+    const product: Icart = new Cart(req.body);
+    const cartProduct: Icart = await product.save();
     res
       .status(200)
       .json(response("Product added to cart", cartProduct, config.successStatusCode));
@@ -35,9 +36,9 @@ const addToCart = async (req: Request, res: Response): Promise<void> => {
 
 const updateCart = async (req: Request, res: Response): Promise<void> => {
   try {
-    const newProduct: any = await Product.findOneAndUpdate(
+    const newProduct: Icart | null = await Cart.findOneAndUpdate(
       { user_id: req.body.user_id, product: req.body.product  },
-      req.body
+      req.body,
     );
     res
       .status(config.successStatusCode)
@@ -53,7 +54,7 @@ const updateCart = async (req: Request, res: Response): Promise<void> => {
 };
 
 const getCartProducts = async (req: Request, res: Response) => {
-  Product.find({user_id: req.body.user_id}, (err: Response, data: Response) => {
+  Cart.find({}, (err: Response, data: Response) => {
     if (err) {
       res.status(500).json({ message: "internal server problem" });
     } else {
@@ -64,7 +65,7 @@ const getCartProducts = async (req: Request, res: Response) => {
 
 const deleteProduct = async (req: Request, res: Response): Promise<void> => {
   try {
-    const deleteProduct: any = await Product.deleteOne({ user_id: req.body.user_id, product: req.body.product });
+    const deleteProduct: any = await Cart.deleteOne({ user_id: req.body.user_id, product: req.body.product });
     res
       .status(config.successStatusCode)
       .json(response("Product is removed from the cart", deleteProduct, config.successStatusCode));
@@ -78,6 +79,54 @@ const deleteProduct = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+const checkout = async (req: Request, res: Response): Promise<void> => {
+  try {
+    let body = req.body.body
+    let product: IcartOrder = new cartOrder(body)
+    const cartProduct: IcartOrder = await product.save();
+    res
+      .status(200)
+      .json(response("Product added to cart", cartProduct, config.successStatusCode));
+  } catch (error) {
+    console.error(error);
+    res
+      .status(config.badRequestStatusCode)
+      .json(
+        response("Unable to add  the product to cart", {error}, config.badRequestStatusCode)
+      );
+  }
+
+}
+
+const clearCart = async (req: Request, res: Response): Promise<void> => {
+  try {
+    console.log(req.body.user_id)
+    const deleteCart: any = await Cart.deleteMany({});
+    res
+      .status(config.successStatusCode)
+      .json(response("Product is removed from the cart", deleteCart, config.successStatusCode));
+  } catch (error) {
+    console.error(error);
+    res
+      .status(config.badRequestStatusCode)
+      .json(
+        response("Unable to remove the product from the cart", {}, config.badRequestStatusCode)
+      );
+  }
+};
+
+const getcartOrders = async (req: Request, res: Response): Promise<void> => {
+  cartOrder.find({}, (err: Response, data: Response) => {
+    if (err) {
+      console.log(err)
+      res.status(500).json({ message: "internal server problem" });
+    } else {
+      console.log(data)
+      res.status(200).json( data );
+    }
+  })
+}
+
 let response = (message: string, data: any, status: number) => {
   return { message, data, status };
 };
@@ -87,5 +136,8 @@ export {
   addToCart,
   updateCart,
   getCartProducts,
-  deleteProduct
+  deleteProduct,
+  checkout,
+  getcartOrders,
+  clearCart
 };

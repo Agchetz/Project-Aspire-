@@ -25,6 +25,8 @@ const orderValidator = (): ValidationChain[] => [
   check("price").notEmpty().withMessage("price is required"),
   check("address").notEmpty().withMessage("address is required"),
   check("status").notEmpty().withMessage("status is required"),
+  check("image").notEmpty().withMessage("image is required"),
+
 ];
 
 const productValidator = (): ValidationChain[] => [
@@ -32,7 +34,15 @@ const productValidator = (): ValidationChain[] => [
   check("department").notEmpty().withMessage("field is required"),
   check("quantity").notEmpty().withMessage("quantity is required"),
   check("price").notEmpty().withMessage("price is required"),
-  check("id").notEmpty().withMessage("id is required"),
+  check("image").notEmpty().withMessage("image is required"),
+];
+
+const cartOrder = (): ValidationChain[] => [
+  check("product").notEmpty().withMessage("product is required"),
+  check("department").notEmpty().withMessage("field is required"),
+  check("quantity").notEmpty().withMessage("quantity is required"),
+  check("price").notEmpty().withMessage("price is required"),
+  check("image").notEmpty().withMessage("image is required"),
 ];
 
 const validateInput = (req: Request, res: Response, next: NextFunction) => {
@@ -55,4 +65,4 @@ const validateInput = (req: Request, res: Response, next: NextFunction) => {
   }
   return next();
 };
-export { loginValidator, validateInput, orderValidator, registerValidator, productValidator };
+export { loginValidator, validateInput, orderValidator, registerValidator, productValidator, cartOrder };

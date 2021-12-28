@@ -14,6 +14,7 @@ import { RoleGuardGuard } from './Shared/role-guard.guard';
 import { HideForRolesDirective } from './Shared/directives/hide-for-roles.directive';
 import { ProductListComponent } from './component/product/product-list/product-list.component';
 import { CartComponent } from './component/product/cart/cart.component';
+import { CheckoutComponent } from './component/product/checkout/checkout.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -43,6 +44,10 @@ const routes: Routes = [
   component: CartComponent,
   canActivate: [AuthGuard],
   },
+  {path: 'your-orders',
+  component: CheckoutComponent,
+  canActivate: [AuthGuard],
+  },
   { path: 'home', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'forgotPassword', component: ForgotPasswordComponent },
   { path: 'resetPassword/:token', component: ResetPasswordComponent },
@@ -64,4 +69,5 @@ export const routingComponents = [
   DynamicGridComponent,
   LoginComponent,
   ResetPasswordComponent,
+  CheckoutComponent,
 ];

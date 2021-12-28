@@ -1,6 +1,6 @@
 import { Document } from "mongoose";
 
-export interface Iproduct extends Document {
+export interface Icart extends Document {
   image: String;
   product: String;
   department: String;

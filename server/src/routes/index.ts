@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { getOrder,createOrder,updateOrder, deleteOrder, orderId, getOrderStatus } from '../controllers/orderController'
-import { addToCart, deleteProduct, getCartProducts, getProduct, updateCart } from '../controllers/productController';
+import { addToCart, checkout, clearCart, deleteProduct, getcartOrders, getCartProducts, getProduct, updateCart } from '../controllers/productController';
 import { getUser,createUser,login, postForgotPassword, checkUser, updatePassword} from '../controllers/userController'
 import { checkJwt } from '../middleware/checkJwt';
 const  validator = require('../validations/validator');
@@ -18,7 +18,9 @@ router.post('/cart', [checkJwt], addToCart)
 router.post('/updateCart', [checkJwt], updateCart)
 router.get('/getCartProducts', [checkJwt], getCartProducts)
 router.put('/deleteProduct', [checkJwt], deleteProduct)
-
+router.post('/checkout', [checkJwt], checkout)
+router.put('/clear-cart', [checkJwt], clearCart)
+router.get('/getCartDetails', [checkJwt], getcartOrders)
 
 router.get('/getuser', getUser)
 router.post('/user', [ validator.registerValidator(), validator.validateInput ], createUser)

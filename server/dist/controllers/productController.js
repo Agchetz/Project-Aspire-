@@ -12,9 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.getCartProducts = exports.updateCart = exports.addToCart = exports.getProduct = void 0;
-const product_1 = __importDefault(require("../models/product"));
+exports.clearCart = exports.getcartOrders = exports.checkout = exports.deleteProduct = exports.getCartProducts = exports.updateCart = exports.addToCart = exports.getProduct = void 0;
 const orderModel_1 = __importDefault(require("../models/orderModel"));
+const cart_1 = __importDefault(require("../models/cart"));
+const cartOrder_1 = __importDefault(require("../models/cartOrder"));
 const config = require("../config/config");
 const getProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     orderModel_1.default.find({}, (err, data) => {
@@ -30,7 +31,7 @@ exports.getProduct = getProduct;
 const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let user = res.locals.jwtPayload;
     try {
-        const product = new product_1.default(req.body);
+        const product = new cart_1.default(req.body);
         const cartProduct = yield product.save();
         res
             .status(200)
@@ -46,7 +47,7 @@ const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.addToCart = addToCart;
 const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const newProduct = yield product_1.default.findOneAndUpdate({ user_id: req.body.user_id, product: req.body.product }, req.body);
+        const newProduct = yield cart_1.default.findOneAndUpdate({ user_id: req.body.user_id, product: req.body.product }, req.body);
         res
             .status(config.successStatusCode)
             .json(response("Cart updated", newProduct, config.successStatusCode));
@@ -60,7 +61,7 @@ const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.updateCart = updateCart;
 const getCartProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    product_1.default.find({ user_id: req.body.user_id }, (err, data) => {
+    cart_1.default.find({}, (err, data) => {
         if (err) {
             res.status(500).json({ message: "internal server problem" });
         }
@@ -72,7 +73,7 @@ const getCartProducts = (req, res) => __awaiter(void 0, void 0, void 0, function
 exports.getCartProducts = getCartProducts;
 const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const deleteProduct = yield product_1.default.deleteOne({ user_id: req.body.user_id, product: req.body.product });
+        const deleteProduct = yield cart_1.default.deleteOne({ user_id: req.body.user_id, product: req.body.product });
         res
             .status(config.successStatusCode)
             .json(response("Product is removed from the cart", deleteProduct, config.successStatusCode));
@@ -85,6 +86,52 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.deleteProduct = deleteProduct;
+const checkout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let body = req.body.body;
+        let product = new cartOrder_1.default(body);
+        const cartProduct = yield product.save();
+        res
+            .status(200)
+            .json(response("Product added to cart", cartProduct, config.successStatusCode));
+    }
+    catch (error) {
+        console.error(error);
+        res
+            .status(config.badRequestStatusCode)
+            .json(response("Unable to add  the product to cart", { error }, config.badRequestStatusCode));
+    }
+});
+exports.checkout = checkout;
+const clearCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log(req.body.user_id);
+        const deleteCart = yield cart_1.default.deleteMany({});
+        res
+            .status(config.successStatusCode)
+            .json(response("Product is removed from the cart", deleteCart, config.successStatusCode));
+    }
+    catch (error) {
+        console.error(error);
+        res
+            .status(config.badRequestStatusCode)
+            .json(response("Unable to remove the product from the cart", {}, config.badRequestStatusCode));
+    }
+});
+exports.clearCart = clearCart;
+const getcartOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    cartOrder_1.default.find({}, (err, data) => {
+        if (err) {
+            console.log(err);
+            res.status(500).json({ message: "internal server problem" });
+        }
+        else {
+            console.log(data);
+            res.status(200).json(data);
+        }
+    });
+});
+exports.getcartOrders = getcartOrders;
 let response = (message, data, status) => {
     return { message, data, status };
 };

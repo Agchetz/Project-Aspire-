@@ -5,7 +5,7 @@ import orderModel from "../models/orderModel";
 const config = require("../config/config");
 
 const getOrder = async (req: Request, res: Response): Promise<void> => {
-  const id: "typeofOrder" = req.body.user_id;
+  const id = req.body.user_id;
   orderModel.find({ user_id: id }, (err: Response, data: Response) => {
     if (err) {
       res.status(500).json({ message: "internal server problem" });

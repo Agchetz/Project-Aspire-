@@ -1,7 +1,6 @@
 import { Document } from "mongoose";
 
 export interface IOrder extends Document {
-  user_id: string;
   product: String;
   department: String;
   quantity: number;

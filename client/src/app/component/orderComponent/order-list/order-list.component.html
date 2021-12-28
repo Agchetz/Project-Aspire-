@@ -12,10 +12,10 @@
 </button>
 
 <mat-table [dataSource]="data" matSort>
-  <ng-container *ngFor="let column of displayedColumns" [matColumnDef]="column">
+  <ng-container *ngFor="let column of displayedColumns"  [matColumnDef]="column">
     <mat-header-cell *matHeaderCellDef mat-sort-header>{{ column | uppercase }}</mat-header-cell>
     <mat-cell *matCellDef="let row">
-      <span *ngIf="column !== 'Action'">{{ row[column] }}</span>
+      <span *ngIf="column !== 'Action' && column !== 'image'" >{{ row[column] }}</span>
       <span *ngIf="column === 'Action'">
         <mat-icon
           (click)="deleteOrder(row)"

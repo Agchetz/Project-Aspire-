@@ -23,6 +23,7 @@ export class OrderCreateComponent implements OnInit {
     address: ['', Validators.required],
     status: ['', Validators.required],
     image: ['', Validators.required],
+
   });
 
   constructor(
@@ -42,9 +43,10 @@ export class OrderCreateComponent implements OnInit {
       const param = this.activateRoute.snapshot.paramMap.get('id');
       this.myService.getByOrder(param).subscribe(
         (data: any) => {
+          data[0].image = data[0].image.split('\\')[2]
+          this.updateForm = true;
           this.updateValue = param;
           this.orderForm.patchValue(data[0]);
-          this.updateForm = true;
         },
         (error) => { this.toastr.error(error.error.message,'Unable to fetch values by ID') })
   }
@@ -67,6 +69,7 @@ export class OrderCreateComponent implements OnInit {
 
   addOrder() {
     this.orderForm.valid 
+    console.log(this.orderForm.value)
       this.myService.addOrder(this.orderForm.value).subscribe(
         (data) => {
             this.router.navigateByUrl('/order/list'),
@@ -76,5 +79,4 @@ export class OrderCreateComponent implements OnInit {
       );
     }
   
-
 }
