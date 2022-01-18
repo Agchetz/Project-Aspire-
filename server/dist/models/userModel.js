@@ -22,6 +22,9 @@ const userSchema = new mongoose_1.Schema({
     role: {
         type: String,
         required: true,
-    }
+    },
+    resetToken: [{
+            type: String
+        }],
 }, { timestamps: true });
-exports.default = (0, mongoose_1.model)("IUser", userSchema);
+exports.default = (0, mongoose_1.model)("users", userSchema);

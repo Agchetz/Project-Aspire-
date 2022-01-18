@@ -1,14 +1,29 @@
 import { IcartOrder } from "./../types/cartOrder";
-import { model, Schema } from "mongoose";
-import { productSchema } from "./product";
+import * as mongoose from 'mongoose';
+import { model } from "mongoose";
 
-const cartOrderSchema: Schema = new Schema(
+const cartOrderSchema = new mongoose.Schema(
   {
-    orderdetails:{
-      type: [productSchema],
+    orderdetails:[
+      {
+      id:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'product'
+      },
+      quantity: {
+        type: Number,
+        required: true
+      }  
+    },
+  ],
+    user_id: {
+      type: String,
       required: true
     },
-   
+    total: {
+      type: Number,
+      required: true
+    }
   },
   { timestamps: true },
 );

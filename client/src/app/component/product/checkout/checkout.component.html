@@ -1,4 +1,4 @@
-<div  *ngFor="let data of temp;" >
+<div *ngFor="let elem of temp">
 <section class="vh-auto gradient-custom-2">
     <div class="container py-4 h-auto">
       <div class="row d-flex justify-content-start align-items-start ">
@@ -8,8 +8,8 @@
             <div class="card-header p-3"  >
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <p class="text-muted mb-2" > Order ID <span class="fw-bold text-body"> : {{data._id}}</span></p>
-                  <p class="text-muted mb-0"> Place On <span class="fw-bold text-body"> : {{data.date}}</span> </p>
+                  <p class="text-muted mb-2" > Order ID <span class="fw-bold text-body"> : {{ elem.orderId}}</span></p>
+                  <p class="text-muted mb-0"> Place On <span class="fw-bold text-body"> : {{ elem.created}}</span> </p>
                 </div>
                 <div>
                     <p class="text-muted mb-2"> Thank you, </p>
@@ -18,17 +18,18 @@
               </div>
             </div>
 
-            <div *ngFor="let item of data">
+
+            <div *ngFor="let data of elem.demo;">
             <div class="card-body p-1" style="margin-left: 30px; margin-top: 10px;">
               <div class="d-flex flex-row" style="margin-right: 50px;">
                 <div class="flex-fill">
-                  <h2 class="bold mb-2">{{item.product}}</h2>
-                  <p class="text-muted mb-2"> Qt: {{item.quantity}} item</p>
-                  <h4 class="mb-2">&#x20b9; {{item.price}}</h4>
+                  <h2 class="bold mb-2">{{data.product}}</h2>
+                  <p class="text-muted mb-2"> Qt: {{data.quantity}} item</p>
+                  <h4 class="mb-2">&#x20b9; {{data.price}}</h4>
                   <!-- <p class="text-muted">Tracking Status on: <span class="text-body">11:30pm, Today</span></p> -->
                 </div>
                 <div>
-                  <img class="align-self-center img-fluid" src="../../../../assets/{{item.image}}" width="100">
+                  <img class="align-self-center img-fluid" src="../../../../assets/{{data.image}}" width="100">
                 </div>
               </div>
               <hr style="color: black;">
@@ -40,12 +41,10 @@
             </div>
             </div>
 
-
             <div  class="card-footer p-3" >
               <div class="d-flex justify-content-between ">
-
                 <div style="margin-right: 50px;">
-                    <h2>Total - &#x20b9; {{totalPrice}}</h2>
+                    <h2>Total - &#x20b9; {{elem.total}}</h2>
                 </div>
                 <!-- <h5 class="fw-normal mb-0"><a href="#!">Track</a></h5>
                 <div class="border-start h-100"></div>
@@ -65,6 +64,6 @@
           </div>
         </div>
       </div>
-    </div>
+      </div>
   </section>
 </div>

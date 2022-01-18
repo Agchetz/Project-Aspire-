@@ -44,6 +44,7 @@ get resetForm() {
   updatePassword(){
     if(this.passwordForm.valid){
     let token = location.href.split('/')[4]
+    console.log(token, this.passwordForm.value)
     this.myService.updatePassword(token, this.passwordForm.value).subscribe(
     (data) =>{
       this.toastr.success("Password changed successfully")

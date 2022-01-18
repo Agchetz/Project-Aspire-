@@ -1,35 +1,26 @@
-import { Icart } from "./../types/cart";
-import { model, Schema } from "mongoose";
+import { cartType } from "./../types/cart";
+import * as mongoose from "mongoose";
 
-const cartSchema: Schema = new Schema(
-  [{
-
-    image: {
-    type: String,
-    },
-    product: {
-      type: String,
-      required: true,
-    },
-    department: {
-      type: String,
-      required: true,
-    },
-    quantity: {
-      type: Number,
-      required: true,
-
-    },
-    price: {
-      type: Number,
-      required: true,
-    },
+export const cartSchema = new mongoose.Schema(
+  {
     user_id: {
       type: String,
       required: true,
     },
-  },],
+    product: [
+      {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "product",
+        },
+        quantity: {
+          type: Number,
+          required: true
+        }
+      },
+    ],
+  },
   { timestamps: true }
 );
 
-export default model<Icart>("Cart", cartSchema);
+export default mongoose.model<cartType>("Cart", cartSchema);

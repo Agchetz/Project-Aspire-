@@ -14,10 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updatePassword = exports.checkUser = exports.postForgotPassword = exports.login = exports.createUser = exports.getUser = void 0;
 const userModel_1 = __importDefault(require("../models/userModel"));
-const tokenModel_1 = __importDefault(require("../models/tokenModel"));
 const checkJwt_1 = require("../middleware/checkJwt");
 const nodemailer = require('nodemailer');
-const authModel = require('../models/authmodel');
 const config = require("../config/config");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -115,9 +113,7 @@ const postForgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 .json(response("user not exist", req.body, config.successStatusCode));
         }
         const token = createToken(users);
-        console.log(token);
-        const itoken = new tokenModel_1.default({ email: req.body.email, token: token.token });
-        const newToken = yield itoken.save();
+        const newToken = yield userModel_1.default.findOneAndUpdate({ email: req.body.email }, { resetToken: token.token });
         if (users) {
             sendMail(req.body.email, token.token, 'New Password');
         }
@@ -126,6 +122,7 @@ const postForgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, funct
             .json(response("Users returned successfully", [token, users.userName], config.successStatusCode));
     }
     catch (error) {
+        console.log(error);
         return res
             .status(config.badRequestStatusCode)
             .json(response("Unable to login", {}, config.badRequestStatusCode));
@@ -193,7 +190,7 @@ let updatePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const password = bcrypt.hashSync(req.body.password.toString(), 10);
         let user_id = yield (0, checkJwt_1.tokenVerify)(req, res);
         console.log(user_id);
-        let change = yield userModel_1.default.findOneAndUpdate({ _id: user_id }, { password });
+        let change = yield userModel_1.default.findOneAndUpdate({ _id: user_id }, { password, resetToken: token });
         res
             .status(config.successStatusCode)
             .json(response("Password Changed", {}, config.successStatusCode));

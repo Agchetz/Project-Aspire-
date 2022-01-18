@@ -1,7 +1,7 @@
-import { IOrder } from "./../types/order";
+import { product } from "../types/productModel";
 import { model, Schema } from "mongoose";
 
-const orderSchema: Schema = new Schema(
+export const productSchema: Schema = new Schema(
   {
     product: {
       type: String,
@@ -15,21 +15,8 @@ const orderSchema: Schema = new Schema(
       type: Number,
       required: true,
     },
-    stock: {
-      type: String,
-      required: true,
-    },
     price: {
       type: Number,
-      required: true,
-    },
-    address: {
-      type: String,
-      required: true,
-    },
-    status: {
-      type: String,
-      enum: ["ordered", "packed", "dispatched", "delivered"],
       required: true,
     },
     image: {
@@ -40,4 +27,4 @@ const orderSchema: Schema = new Schema(
   { timestamps: true }
 );
 
-export default model<IOrder>("Order", orderSchema);
+export default model<product>("Product", productSchema);

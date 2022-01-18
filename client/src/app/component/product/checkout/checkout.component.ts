@@ -2,58 +2,68 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { BaseService } from 'src/app/Shared/baseService';
-import { productModel } from 'src/app/Shared/interface';
 
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.css']
+  styleUrls: ['./checkout.component.css'],
 })
 export class CheckoutComponent implements OnInit {
+  public userName!: string | null;
+  public temp: any = [];
+  public order: any = []
 
-  public userName!: string | null
-  temp: any = [];
-  created: any;
-  totalPrice: any;
-  id: any = [];
-
-  constructor(private myService: BaseService, private toastr: ToastrService, private router: Router) { }
+  constructor(
+    private myService: BaseService,
+    private toastr: ToastrService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    this.getCartOrders()
-    this.user()
+    this.getCartOrders();
+    this.user();
+    // this.clearCart();
   }
 
-  getCartOrders(){
+  getCartOrders() {
     this.myService.getCartOrders().subscribe(
-      (data) => {this.orderDetails(data)
+      (data) => {
+        let temp: any = data;
+        this.productDetails(temp.data);
       },
-      (error) => this.toastr.error(error.error.message,"Unable to fetch your orders")
-    )
+      (error) =>
+        this.toastr.error(error.error.message, 'Unable to fetch your orders')
+    );
   }
 
-  orderDetails(data:any){
-    console.log(data)
-    for(let i=0;i<data.length;i++) {
-      let test: Array<object> = []
-      test = data[i].orderdetails
-       this.temp[i] = test.map((item:any) => {
-         return  {
-          product: item.product,
-          price: item.price,
-          quantity: item.quantity,
-          image: item.image,
-        }
-      }) 
-      this.temp[i]._id = data[i]._id
-      this.temp[i].date = data[i].createdAt.slice(0,10)
-    }
-    console.log(this.temp)
-    return  this.temp
+  productDetails(data: any) {
+    this.temp = data.product
+    console.log
+    this.temp = data.map((item: any, index: number) => {
+      let demo = item.product.map((element: any) => {
+        return {
+          productName: element.product,
+          price: element.price,
+          image: element.image.slice(12),
+          created: element.createdAt,
+          quantity: element.quantity
+        };
+      });
+      return {demo, total: item.total,
+        orderId: item._id,};
+    });
+    console.log(this.temp);
   }
 
-  user(){
-    this.userName = localStorage.getItem('user')
-  }
+  // clearCart() {
+  // this.myService.clearCart().subscribe(
+  //   //     (data) => { this.router.navigate(['your-orders'])},
+  //   //     (error) => this.toastr.error(error.error.message,"Unable to clear the cart")
+  //   //   )
 
+  // }
+
+  user() {
+    this.userName = localStorage.getItem('user');
+  }
 }

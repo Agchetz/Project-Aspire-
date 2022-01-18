@@ -109,9 +109,8 @@ export class BaseService {
   })
 };
 
-clearCart(body:productModel[]){
-  return this.http.put(`${environment.serverAddress}/clear-cart`, body ,{
-    observe:'body'
+clearCart(){
+  return this.http.put(`${environment.serverAddress}/clear-cart` ,{
   })
 };
 

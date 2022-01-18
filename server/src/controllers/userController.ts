@@ -1,15 +1,11 @@
 import { Response, Request } from "express";
 import { IUser } from "./../types/user";
 import User from "../models/userModel";
-import Token from "../models/tokenModel"
-import { IToken } from "../types/token";
-import { checkJwt, tokenVerify } from "../middleware/checkJwt";
+import { tokenVerify } from "../middleware/checkJwt";
 const nodemailer = require('nodemailer')
-const authModel = require('../models/authmodel')
 const config = require("../config/config");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
 
 const getUser = async (req: Request, res: Response): Promise<any> => {
   try {
@@ -111,7 +107,6 @@ const login = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-
 const postForgotPassword = async (req:Request, res: Response): Promise<any>=>{
   try {
     const users: any = await User.findOne({ email: req.body.email });
@@ -121,9 +116,7 @@ const postForgotPassword = async (req:Request, res: Response): Promise<any>=>{
         .json(response("user not exist", req.body, config.successStatusCode));
     }
     const token = createToken(users)
-    console.log(token)
-    const itoken: IToken = new Token({email:req.body.email,token:token.token})
-    const newToken: IToken = await itoken.save()
+    const newToken: IUser | null = await User.findOneAndUpdate({email:req.body.email},{resetToken:token.token})
     if(users){
       sendMail(req.body.email, token.token, 'New Password')
     }
@@ -133,14 +126,14 @@ const postForgotPassword = async (req:Request, res: Response): Promise<any>=>{
           [token, users.userName],
           config.successStatusCode
         )
-      );
-    
+      );  
   } catch (error) {
+    console.log(error)
     return res
       .status(config.badRequestStatusCode)
       .json(response("Unable to login", {}, config.badRequestStatusCode));
   }
- }
+};
 
 let response = (message: string, data: any, status: number) => {
   return { message, data, status };
@@ -154,7 +147,6 @@ const createToken = (user: any): any => {
     token: jwt.sign({ id: user._id, email: user.email, userName: user.userName, role: user.role }, secret, { expiresIn }),
   };
 };
-
 
 let sendMail = async (email: any, token: any, subject: string):Promise<any> => {
     try{  
@@ -182,7 +174,7 @@ let sendMail = async (email: any, token: any, subject: string):Promise<any> => {
     }catch(error){
       return console.log(error)
     }
-}
+};
 
 let checkUser = async (req: Request, res: Response):Promise<any> => {
   try{
@@ -199,7 +191,7 @@ let checkUser = async (req: Request, res: Response):Promise<any> => {
         response("Unauthorized user", {}, config.badRequestStatusCode)
       );
   }
-}
+};
 
 let updatePassword = async (req:Request, res: Response):Promise<any> => {
   try {
@@ -207,7 +199,7 @@ let updatePassword = async (req:Request, res: Response):Promise<any> => {
     const password = bcrypt.hashSync(req.body.password.toString(), 10)
     let user_id:any = await tokenVerify(req, res)
     console.log(user_id)
-    let change = await User.findOneAndUpdate({_id:user_id}, {password})
+    let change = await User.findOneAndUpdate({_id:user_id}, {password,resetToken:token})
     res
       .status(config.successStatusCode)
       .json(response("Password Changed",{}, config.successStatusCode));
@@ -219,8 +211,7 @@ let updatePassword = async (req:Request, res: Response):Promise<any> => {
         response("Unable to change  the password", {}, config.badRequestStatusCode)
       );
   }
-}
-
+};
 
 
 export { getUser, createUser, login, postForgotPassword, checkUser, updatePassword };

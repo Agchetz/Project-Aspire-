@@ -18,12 +18,8 @@ export class OrderCreateComponent implements OnInit {
     product: ['', Validators.required],
     department: ['', Validators.required],
     quantity: ['', Validators.required],
-    stock: ['', Validators.required],
     price: ['', Validators.required],
-    address: ['', Validators.required],
-    status: ['', Validators.required],
     image: ['', Validators.required],
-
   });
 
   constructor(

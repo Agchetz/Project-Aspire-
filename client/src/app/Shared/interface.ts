@@ -15,9 +15,7 @@ export interface orderModel {
   product: String;
   department: String;
   quantity: Number;
-  stock: String;
   price: Number;
-  address: String;
   image: String
 }
 
@@ -27,9 +25,6 @@ export interface orderDetailsModel {
   department: String;
   quantity: Number;
   price: Number;
-  stock: String;
-  address: String;
-  updatedAt: Date;
   image: String;
   _id: Number;
 }

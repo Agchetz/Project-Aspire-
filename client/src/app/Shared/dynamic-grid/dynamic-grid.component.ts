@@ -36,8 +36,6 @@ export class DynamicGridComponent implements OnInit {
       department: element.department,
       quantity: element.quantity,
       price: element.price,
-      stock: element.stock,
-      address: element.address,
       image: element.image.split("\\")[2]
     };    
 

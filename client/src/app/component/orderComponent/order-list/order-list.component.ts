@@ -53,6 +53,7 @@ constructor(
     }
 
     loadTableData(){
+      console.log(this.dataSource)
       this.columns =  Object.keys(this.dataSource[0]);
       this.rows = this.dataSource;
       this.data = new MatTableDataSource<Object>(this.rows);

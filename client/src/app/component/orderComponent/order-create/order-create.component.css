@@ -6,7 +6,7 @@
 
 .outter-container{
   background-color: rgb(255, 254, 254);
-  width: 30%;
+  width: 25%;
   margin-left: 35%;
   display: flex;
   justify-content: center;
@@ -15,7 +15,7 @@
   opacity: 95%;
   margin-top: 10px;
   border-radius: 30px;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 label{
   font-size: large;

@@ -32,10 +32,10 @@ export class ProductListComponent implements OnInit {
   }
 
   getProduct(data: orderDetailsModel[]) {
-    console.log(data)
     this.fullTableData = data;
     this.tabledata = data.map((element: orderDetailsModel) => {
       return {
+        id: element._id,
         product: element.product,
         department: element.department,
         quantity: element.quantity,
@@ -43,9 +43,10 @@ export class ProductListComponent implements OnInit {
         image: element.image.split("\\")[2],
       };
     });
+    console.log(this.tabledata)
   }
 
-  addToCart(data: productModel) {
+  addToCart(data: any) {
     console.log(data)
     this.myService.addToCart(data).subscribe(
       (data) => {

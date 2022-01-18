@@ -1,9 +1,10 @@
 import { Document } from "mongoose";
 
-export interface cartType extends Document {
-  image: String;
+export interface product extends Document {
   product: String;
   department: String;
+  quantity: number;
   price: number;
-  quantity: number
+  image: String;
 }
+

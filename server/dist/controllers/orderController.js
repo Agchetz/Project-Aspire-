@@ -13,34 +13,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getOrderStatus = exports.orderId = exports.deleteOrder = exports.updateOrder = exports.createOrder = exports.getOrder = void 0;
-const orderModel_1 = __importDefault(require("../models/orderModel"));
-const orderModel_2 = __importDefault(require("../models/orderModel"));
+const productModel_1 = __importDefault(require("../models/productModel"));
 const config = require("../config/config");
 const getOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = req.body.user_id;
-    orderModel_2.default.find({ user_id: id }, (err, data) => {
+    productModel_1.default.find({}, (err, data) => {
         if (err) {
+            console.log(err);
             res.status(500).json({ message: "internal server problem" });
         }
         else {
+            console.log(data);
             res.json(data);
         }
     });
 });
 exports.getOrder = getOrder;
 const getOrderStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let statusData = yield orderModel_2.default
-        .aggregate()
-        .match({ user_id: req.body.user_id })
-        .group({ _id: "$status", total: { $sum: 1 } })
+    let statusData = yield productModel_1.default.aggregate()
+        .match({})
+        .group({ _id: "$department", total: { $sum: 1 } })
         .project({ _id: 1, total: 1 });
     res.send(statusData);
+    console.log(statusData);
 });
 exports.getOrderStatus = getOrderStatus;
 const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let user = res.locals.jwtPayload;
     try {
-        const order = new orderModel_1.default(req.body);
+        const order = new productModel_1.default(req.body);
         console.log(req.body);
         const newOrder = yield order.save();
         res
@@ -57,7 +57,7 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.createOrder = createOrder;
 const updateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const newOrder = yield orderModel_2.default.findOneAndUpdate({ _id: req.body.id }, req.body);
+        const newOrder = yield productModel_1.default.findOneAndUpdate({ _id: req.body.id }, req.body);
         res
             .status(config.successStatusCode)
             .json(response("Order updated", newOrder, config.successStatusCode));
@@ -72,7 +72,7 @@ const updateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.updateOrder = updateOrder;
 const deleteOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const deleteOrder = yield orderModel_2.default.deleteOne({ _id: req.body.id });
+        const deleteOrder = yield productModel_1.default.deleteOne({ _id: req.body.id });
         res
             .status(config.successStatusCode)
             .json(response("Order deleted", deleteOrder, config.successStatusCode));
@@ -85,13 +85,13 @@ const deleteOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.deleteOrder = deleteOrder;
-let response = (message, data, status) => {
-    return { message, data, status };
-};
 const orderId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = req.params.id;
-    orderModel_2.default.find({ _id: id }, (err, data) => {
+    productModel_1.default.find({ _id: id }, (err, data) => {
         res.send(data);
     });
 });
 exports.orderId = orderId;
+let response = (message, data, status) => {
+    return { message, data, status };
+};

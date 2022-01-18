@@ -23,9 +23,7 @@ export class ForgotPasswordComponent implements OnInit {
     private router: Router,
     private myService: BaseService,
     private toastr: ToastrService
-  ) {
-    console.log(this.dialogFlag);
-  }
+  ) {}
 
   get email() {
     return this.loginForm.controls.email;

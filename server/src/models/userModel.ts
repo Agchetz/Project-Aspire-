@@ -23,9 +23,12 @@ const userSchema: Schema = new Schema(
     role: {
       type: String,
       required: true,
-    }
+    },
+    resetToken: [{
+      type: String
+    }],
   },
   { timestamps: true }
 );
 
-export default model<IUser>("IUser", userSchema);
+export default model<IUser>("users", userSchema);
