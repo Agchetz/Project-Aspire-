@@ -44,9 +44,9 @@ const createOrder = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const updateOrder = async (req: any, res: Response): Promise<void> => {
+const updateOrder = async (req: Request, res: Response): Promise<void> => {
   try {
-    const newOrder: any = await Product.findOneAndUpdate(
+    const newOrder = await Product.findOneAndUpdate(
       { _id: req.body.id },
       req.body
     );
@@ -65,7 +65,7 @@ const updateOrder = async (req: any, res: Response): Promise<void> => {
 
 const deleteOrder = async (req: Request, res: Response): Promise<void> => {
   try {
-    const deleteOrder: any = await Product.deleteOne({ _id: req.body.id });
+    const deleteOrder = await Product.deleteOne({ _id: req.body.id });
     res
       .status(config.successStatusCode)
       .json(response("Order deleted", deleteOrder, config.successStatusCode));

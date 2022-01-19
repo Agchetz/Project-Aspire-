@@ -7,7 +7,7 @@ const config = require("../config/config");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const getUser = async (req: Request, res: Response): Promise<any> => {
+const getUser = async (req: Request, res: Response): Promise<object> => {
   try {
     const users: IUser[] = await User.find();
     return res
@@ -74,10 +74,10 @@ const checkEmail = async (email: string) => {
   }
 };
 
-const login = async (req: Request, res: Response): Promise<any> => {
+const login = async (req: Request, res: Response): Promise<object> => {
   try {
     console.log(req.body.email)
-    const users: any = await User.findOne({ email: req.body.email });
+    const users = await User.findOne({ email: req.body.email });
     console.log(users)
     if (!users) {
       return res
@@ -107,9 +107,9 @@ const login = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
-const postForgotPassword = async (req:Request, res: Response): Promise<any>=>{
+const postForgotPassword = async (req:Request, res: Response): Promise<object>=>{
   try {
-    const users: any = await User.findOne({ email: req.body.email });
+    const users = await User.findOne({ email: req.body.email });
     if (!users) {
       return res
         .status(config.badRequestStatusCode)
@@ -135,11 +135,7 @@ const postForgotPassword = async (req:Request, res: Response): Promise<any>=>{
   }
 };
 
-let response = (message: string, data: any, status: number) => {
-  return { message, data, status };
-};
-
-const createToken = (user: any): any => {
+const createToken = (user: IUser) => {
   const expiresIn = '1d';
   const secret = config.jwtSecret;
   return {
@@ -148,7 +144,7 @@ const createToken = (user: any): any => {
   };
 };
 
-let sendMail = async (email: any, token: any, subject: string):Promise<any> => {
+let sendMail = async (email: string, token: string, subject: string):Promise<void> => {
     try{  
       var transporter = nodemailer.createTransport({
           service: 'gmail',
@@ -176,7 +172,7 @@ let sendMail = async (email: any, token: any, subject: string):Promise<any> => {
     }
 };
 
-let checkUser = async (req: Request, res: Response):Promise<any> => {
+let checkUser = async (req: Request, res: Response):Promise<object> => {
   try{
     let token = req.params.token
     tokenVerify(req, res)
@@ -193,11 +189,11 @@ let checkUser = async (req: Request, res: Response):Promise<any> => {
   }
 };
 
-let updatePassword = async (req:Request, res: Response):Promise<any> => {
+let updatePassword = async (req:Request, res: Response):Promise<void> => {
   try {
     const token = req.params.token
     const password = bcrypt.hashSync(req.body.password.toString(), 10)
-    let user_id:any = await tokenVerify(req, res)
+    let user_id = await tokenVerify(req, res)
     console.log(user_id)
     let change = await User.findOneAndUpdate({_id:user_id}, {password,resetToken:token})
     res
@@ -211,6 +207,10 @@ let updatePassword = async (req:Request, res: Response):Promise<any> => {
         response("Unable to change  the password", {}, config.badRequestStatusCode)
       );
   }
+};
+
+let response = (message: string, data: any, status: number) => {
+  return { message, data, status };
 };
 
 

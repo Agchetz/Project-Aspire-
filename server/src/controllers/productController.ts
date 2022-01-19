@@ -20,7 +20,7 @@ const addToCart = async (req: Request, res: Response): Promise<void> => {
   try {
     let isExistingCart = await Cart.find({ user_id: req.body.user_id });
     if (isExistingCart.length) {
-      let temp: any = isExistingCart[0].product;
+      let temp = isExistingCart[0].product;
       let isAlreadyExistedProduct = false;
       let existingProducts = temp.map((element: any) => {
         if (element.product.equals(req.body.id)) {
@@ -72,12 +72,15 @@ const addToCart = async (req: Request, res: Response): Promise<void> => {
 
 const updateCart = async (req: Request, res: Response): Promise<void> => {
   try {
-    let demo: any = 0;
-    let existedProduct: any = await Cart.find({ user_id: req.body.user_id });
-    let temp = existedProduct[0].product;
-    demo = temp.map((element: any) => {
-      if (element._id.equals(req.body[0]._id)) {
-        element.quantity = req.body[0].quantity;
+    let existedProduct: cartType | any = await Cart.find({
+      user_id: req.body.user_id,
+    });
+    console.log(existedProduct)
+    let temp = existedProduct[0].product.flat();
+    console.log('##########3',temp)
+    let demo = temp.map((element: any) => {
+      if (element.product.equals(req.body._id)) {
+        element.quantity = req.body.quantity;
       }
       return element;
     });
@@ -99,35 +102,101 @@ const updateCart = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-//todo
 const getCartProducts = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log(req.body.user_id);
-    const getProduct: cartType[] | null = await Cart.find({
-      user_id: req.body.user_id,
-    });
-    let check: any = [];
-    let temp: any = getProduct[0].product;
-    let demo = await temp.map(async (data: any, index: any) => {
-      let test: any = await product.find({ _id: data.product });
-      let testing = await test.map((element: any) => {
-        return {
-          _id: data._id,
-          id: element._id,
-          product: element.product,
-          quantity: data.quantity,
-          price: element.price,
-          image: element.image,
-        };
+    const getProduct: any | null = await Cart.aggregate()
+      .match({ user_id: req.body.user_id })
+      .unwind("$product")
+      .lookup({
+        from: "products",
+        localField: "product.product",
+        foreignField: "_id",
+        as: "productDetails",
+      })
+      .group({
+        _id: "$_id",
+        user_id: { $first: "$user_id" },
+        productdetails: { $push: "$productDetails" },
+        quantity: { $push: "$product" },
+      })
+      .project({
+        user_id: 1,
+        productdetails: {
+          $reduce: {
+            input: "$productdetails",
+            initialValue: [],
+            in: { $concatArrays: ["$$value", "$$this"] },
+          },
+        },
+        quantity: 1,
       });
-      await check.push(testing);
-      return check;
+    getProduct.map((data: any) => {
+      let orderDetails = data.quantity;
+      let productDetails = data.productdetails;
+      for (let i in orderDetails) {
+        productDetails[i].quantity = orderDetails[i].quantity;
+      }
+      return { product: data.productdetails };
     });
-    setTimeout(() => {
-      res
-        .status(config.successStatusCode)
-        .json(response("Cart updated", check, config.successStatusCode));
-    }, 500);
+    res
+      .status(config.successStatusCode)
+      .json(response("Cart updated", getProduct, config.successStatusCode));
+  } catch (error) {
+    console.error(error);
+    res
+      .status(config.badRequestStatusCode)
+      .json(
+        response("Unable to update the cart", {}, config.badRequestStatusCode)
+      );
+  }
+};
+
+const getcartOrders = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const cart: IcartOrder[] = await cartOrder
+      .aggregate()
+      .match({ user_id: req.body.user_id })
+      .unwind("$orderdetails")
+      .lookup({
+        from: "products",
+        localField: "orderdetails.id",
+        foreignField: "_id",
+        as: "productdetails",
+      })
+      .group({
+        _id: "$_id",
+        orderdetails: { $push: "$orderdetails" },
+        user_id: { $first: "$user_id" },
+        total: { $first: "$total" },
+        productdetails: { $push: "$productdetails" },
+      })
+      .project({
+        product: {
+          $reduce: {
+            input: "$productdetails",
+            initialValue: [],
+            in: { $concatArrays: ["$$value", "$$this"] },
+          },
+        },
+        orderdetails: 1,
+        total: 1,
+      });
+      console.log(cart)
+    cart.map((data: any) => {
+      let orderDetails = data.orderdetails;
+      let productDetails = data.product;
+      console.log(productDetails ,orderDetails)
+      for (let i in orderDetails) {
+        productDetails[i].quantity = orderDetails[i].quantity;
+      }
+      return {
+        product: data.product,
+        total: data.total,
+      };
+    });
+    res
+      .status(config.successStatusCode)
+      .json(response("Cart updated", cart, config.successStatusCode));
   } catch (error) {
     console.error(error);
     res
@@ -141,8 +210,8 @@ const getCartProducts = async (req: Request, res: Response): Promise<void> => {
 const deleteProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     console.log(req.body);
-    let temp: String | undefined | any = { _id: req.body._id };
-    const deleteProduct: any = await Cart.deleteOne({ product: temp });
+    let temp: object = { _id: req.body._id };
+    const deleteProduct = await Cart.deleteOne({ product: temp });
     console.log(deleteProduct);
     res
       .status(config.successStatusCode)
@@ -170,14 +239,10 @@ const deleteProduct = async (req: Request, res: Response): Promise<void> => {
 const checkout = async (req: Request, res: Response): Promise<void> => {
   try {
     let body = req.body.body;
-    let temp: any = [];
-    let id: any = [];
-    let temp_quantity: any = [];
-    let check = await body.orderdetails.map((element: any) => {
-      id = element.id;
-      temp_quantity = element.quantity;
-      temp.push({ id: element.id, quantity: element.quantity });
-      return { id, temp_quantity };
+    console.log(body,'***********')
+    let temp: Array<object> = [];
+    await body.orderdetails.map((element: any) => {
+      temp.push({ id: element._id, quantity: element.quantity });
     });
     console.log(temp);
     let orderproduct: IcartOrder = new cartOrder({
@@ -208,7 +273,7 @@ const checkout = async (req: Request, res: Response): Promise<void> => {
 const clearCart = async (req: Request, res: Response): Promise<void> => {
   try {
     console.log(req.body.user_id);
-    const deleteCart: any = await Cart.deleteMany({
+    const deleteCart = await Cart.deleteMany({
       user_id: req.body.user_id,
     });
     res
@@ -230,60 +295,6 @@ const clearCart = async (req: Request, res: Response): Promise<void> => {
           {},
           config.badRequestStatusCode
         )
-      );
-  }
-};
-
-const getcartOrders = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const cart = await cartOrder
-      .aggregate()
-      .match({ user_id: req.body.user_id })
-      .unwind("$orderdetails")
-      .lookup({
-        from: "products",
-        localField: "orderdetails.id",
-        foreignField: "_id",
-        as: "productDetails",
-      })
-      .group({
-        _id: "$_id",
-        orderdetails: { $push: "$orderdetails" },
-        user_id: { $first: "$user_id" },
-        total: { $first: "$total" },
-        productdetails: { $push: "$productDetails" },
-      })
-      .project({
-        product: {
-          $reduce: {
-            input: "$productdetails",
-            initialValue: [],
-            in: { $concatArrays: ["$$value", "$$this"] },
-          },
-        },
-        orderdetails: 1,
-        total: 1,
-      });
-    cart.map((data: any) => {
-      let orderDetails = data.orderdetails;
-      let productDetails = data.product;
-      for (let i in orderDetails) {
-        productDetails[i].quantity = orderDetails[i].quantity;
-      }
-      return {
-        product: data.product,
-        total: data.total,
-      };
-    });
-    res
-      .status(config.successStatusCode)
-      .json(response("Cart updated", cart, config.successStatusCode));
-  } catch (error) {
-    console.error(error);
-    res
-      .status(config.badRequestStatusCode)
-      .json(
-        response("Unable to update the cart", {}, config.badRequestStatusCode)
       );
   }
 };

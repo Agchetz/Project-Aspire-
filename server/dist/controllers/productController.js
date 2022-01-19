@@ -70,12 +70,15 @@ const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.addToCart = addToCart;
 const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let demo = 0;
-        let existedProduct = yield cart_1.default.find({ user_id: req.body.user_id });
-        let temp = existedProduct[0].product;
-        demo = temp.map((element) => {
-            if (element._id.equals(req.body[0]._id)) {
-                element.quantity = req.body[0].quantity;
+        let existedProduct = yield cart_1.default.find({
+            user_id: req.body.user_id,
+        });
+        console.log(existedProduct);
+        let temp = existedProduct[0].product.flat();
+        console.log('##########3', temp);
+        let demo = temp.map((element) => {
+            if (element.product.equals(req.body._id)) {
+                element.quantity = req.body.quantity;
             }
             return element;
         });
@@ -93,35 +96,45 @@ const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.updateCart = updateCart;
-//todo
 const getCartProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.body.user_id);
-        const getProduct = yield cart_1.default.find({
-            user_id: req.body.user_id,
+        const getProduct = yield cart_1.default.aggregate()
+            .match({ user_id: req.body.user_id })
+            .unwind("$product")
+            .lookup({
+            from: "products",
+            localField: "product.product",
+            foreignField: "_id",
+            as: "productDetails",
+        })
+            .group({
+            _id: "$_id",
+            user_id: { $first: "$user_id" },
+            productdetails: { $push: "$productDetails" },
+            quantity: { $push: "$product" },
+        })
+            .project({
+            user_id: 1,
+            productdetails: {
+                $reduce: {
+                    input: "$productdetails",
+                    initialValue: [],
+                    in: { $concatArrays: ["$$value", "$$this"] },
+                },
+            },
+            quantity: 1,
         });
-        let check = [];
-        let temp = getProduct[0].product;
-        let demo = yield temp.map((data, index) => __awaiter(void 0, void 0, void 0, function* () {
-            let test = yield productModel_1.default.find({ _id: data.product });
-            let testing = yield test.map((element) => {
-                return {
-                    _id: data._id,
-                    id: element._id,
-                    product: element.product,
-                    quantity: data.quantity,
-                    price: element.price,
-                    image: element.image,
-                };
-            });
-            yield check.push(testing);
-            return check;
-        }));
-        setTimeout(() => {
-            res
-                .status(config.successStatusCode)
-                .json(response("Cart updated", check, config.successStatusCode));
-        }, 500);
+        getProduct.map((data) => {
+            let orderDetails = data.quantity;
+            let productDetails = data.productdetails;
+            for (let i in orderDetails) {
+                productDetails[i].quantity = orderDetails[i].quantity;
+            }
+            return { product: data.productdetails };
+        });
+        res
+            .status(config.successStatusCode)
+            .json(response("Cart updated", getProduct, config.successStatusCode));
     }
     catch (error) {
         console.error(error);
@@ -131,6 +144,61 @@ const getCartProducts = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.getCartProducts = getCartProducts;
+const getcartOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const cart = yield cartOrder_1.default
+            .aggregate()
+            .match({ user_id: req.body.user_id })
+            .unwind("$orderdetails")
+            .lookup({
+            from: "products",
+            localField: "orderdetails.id",
+            foreignField: "_id",
+            as: "productdetails",
+        })
+            .group({
+            _id: "$_id",
+            orderdetails: { $push: "$orderdetails" },
+            user_id: { $first: "$user_id" },
+            total: { $first: "$total" },
+            productdetails: { $push: "$productdetails" },
+        })
+            .project({
+            product: {
+                $reduce: {
+                    input: "$productdetails",
+                    initialValue: [],
+                    in: { $concatArrays: ["$$value", "$$this"] },
+                },
+            },
+            orderdetails: 1,
+            total: 1,
+        });
+        console.log(cart);
+        cart.map((data) => {
+            let orderDetails = data.orderdetails;
+            let productDetails = data.product;
+            console.log(productDetails, orderDetails);
+            for (let i in orderDetails) {
+                productDetails[i].quantity = orderDetails[i].quantity;
+            }
+            return {
+                product: data.product,
+                total: data.total,
+            };
+        });
+        res
+            .status(config.successStatusCode)
+            .json(response("Cart updated", cart, config.successStatusCode));
+    }
+    catch (error) {
+        console.error(error);
+        res
+            .status(config.badRequestStatusCode)
+            .json(response("Unable to update the cart", {}, config.badRequestStatusCode));
+    }
+});
+exports.getcartOrders = getcartOrders;
 const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log(req.body);
@@ -152,14 +220,10 @@ exports.deleteProduct = deleteProduct;
 const checkout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let body = req.body.body;
+        console.log(body, '***********');
         let temp = [];
-        let id = [];
-        let temp_quantity = [];
-        let check = yield body.orderdetails.map((element) => {
-            id = element.id;
-            temp_quantity = element.quantity;
-            temp.push({ id: element.id, quantity: element.quantity });
-            return { id, temp_quantity };
+        yield body.orderdetails.map((element) => {
+            temp.push({ id: element._id, quantity: element.quantity });
         });
         console.log(temp);
         let orderproduct = new cartOrder_1.default({
@@ -198,59 +262,6 @@ const clearCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.clearCart = clearCart;
-const getcartOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const cart = yield cartOrder_1.default
-            .aggregate()
-            .match({ user_id: req.body.user_id })
-            .unwind("$orderdetails")
-            .lookup({
-            from: "products",
-            localField: "orderdetails.id",
-            foreignField: "_id",
-            as: "productDetails",
-        })
-            .group({
-            _id: "$_id",
-            orderdetails: { $push: "$orderdetails" },
-            user_id: { $first: "$user_id" },
-            total: { $first: "$total" },
-            productdetails: { $push: "$productDetails" },
-        })
-            .project({
-            product: {
-                $reduce: {
-                    input: "$productdetails",
-                    initialValue: [],
-                    in: { $concatArrays: ["$$value", "$$this"] },
-                },
-            },
-            orderdetails: 1,
-            total: 1,
-        });
-        cart.map((data) => {
-            let orderDetails = data.orderdetails;
-            let productDetails = data.product;
-            for (let i in orderDetails) {
-                productDetails[i].quantity = orderDetails[i].quantity;
-            }
-            return {
-                product: data.product,
-                total: data.total,
-            };
-        });
-        res
-            .status(config.successStatusCode)
-            .json(response("Cart updated", cart, config.successStatusCode));
-    }
-    catch (error) {
-        console.error(error);
-        res
-            .status(config.badRequestStatusCode)
-            .json(response("Unable to update the cart", {}, config.badRequestStatusCode));
-    }
-});
-exports.getcartOrders = getcartOrders;
 let response = (message, data, status) => {
     return { message, data, status };
 };

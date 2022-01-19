@@ -22,7 +22,6 @@ export class CheckoutComponent implements OnInit {
   ngOnInit() {
     this.getCartOrders();
     this.user();
-    // this.clearCart();
   }
 
   getCartOrders() {
@@ -37,31 +36,25 @@ export class CheckoutComponent implements OnInit {
   }
 
   productDetails(data: any) {
+    console.log(data)
+    let date:string
     this.temp = data.product
-    console.log
     this.temp = data.map((item: any, index: number) => {
       let demo = item.product.map((element: any) => {
+        date = element.createdAt.slice(0,10)
         return {
           productName: element.product,
           price: element.price,
           image: element.image.slice(12),
-          created: element.createdAt,
           quantity: element.quantity
         };
       });
       return {demo, total: item.total,
-        orderId: item._id,};
+        orderId: item._id,
+        created: date
+      };
     });
-    console.log(this.temp);
   }
-
-  // clearCart() {
-  // this.myService.clearCart().subscribe(
-  //   //     (data) => { this.router.navigate(['your-orders'])},
-  //   //     (error) => this.toastr.error(error.error.message,"Unable to clear the cart")
-  //   //   )
-
-  // }
 
   user() {
     this.userName = localStorage.getItem('user');

@@ -27,7 +27,7 @@ export class CartComponent implements OnInit {
 
   loadCartData(){
     this.myService.getCartProducts().subscribe(
-      (data) => { this.getData(data), console.log(data)},
+      (data) =>  this.getData(data) ,
       (error) => { this.toastr.error(error.error.message, "unable to fetch cart products")}
     )
   }
@@ -35,6 +35,7 @@ export class CartComponent implements OnInit {
   getData(data: productModel[]){
     this.demo = data
     this.demo = this.demo.data.flat()
+    this.demo = this.demo[0].productdetails
     this.totalProductsInCart = data.length
     this.demo = this.demo.map((data:any)=>{
       return  {
@@ -62,16 +63,17 @@ export class CartComponent implements OnInit {
 }
 
   increment(data: productModel){
+    console.log(data)
     this.totalProductsInCart = data.quantity + 1
     data.quantity = data.quantity + 1
     let test = this.demo.map((element:any)=>{
       if(data.product === element.product){
-        this.testArray.push({'product':element.id, 'quantity': data.quantity, '_id':element._id})
+        this.testArray = ({'product':element.id, 'quantity': data.quantity, '_id':element._id})
       }
     })
     this.total = this.total + data.price
     this.myService.updateCart(this.testArray).subscribe(
-      (data) => {this.toastr.success("Cart updated successfully"),window.location.reload()},
+      (data) => {this.toastr.success("Cart updated successfully")},
       (error) => this.toastr.error(error.error.message,"Unable to update the cart")
     )
   }
@@ -88,11 +90,11 @@ export class CartComponent implements OnInit {
     }
     let test = this.demo.map((element:any)=>{
     if(data.product === element.product){
-      this.testArray.push({'product':element.id, 'quantity': data.quantity, '_id':element._id})
+      this.testArray = ({'product':element.id, 'quantity': data.quantity, '_id':element._id})
     }
   })
     this.myService.updateCart(this.testArray).subscribe(
-      (data) => {this.toastr.success("Cart updated successfully"),window.location.reload()},
+      (data) => {this.toastr.success("Cart updated successfully")},
       (error) => this.toastr.error(error.error.message,"Unable to update the cart")
     )
   }
@@ -100,8 +102,8 @@ export class CartComponent implements OnInit {
   checkout(){
     let data = this.productName
     let total = this.total
-    let test = {orderdetails: data}
-    this.myService.checkout(test, total).subscribe(
+    let temp = {orderdetails: data}
+    this.myService.checkout(temp, total).subscribe(
       (data) => {this.toastr.success("order placed")
     },
       (error) => this.toastr.error(error.error.message,"Unable to place the order")

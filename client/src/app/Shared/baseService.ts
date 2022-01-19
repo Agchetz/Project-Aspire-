@@ -71,7 +71,7 @@ export class BaseService {
     });
 }
 
-  checkUser(token:any){
+  checkUser(token:string){
     return this.http.post(`${environment.serverAddress}/resetPassword/${token}`,{
       observe:'body'
     })
@@ -102,7 +102,7 @@ export class BaseService {
   })
 };
 
-  checkout(body:any, total:any){  
+  checkout(body:object, total:number){  
   return this.http.post(`${environment.serverAddress}/checkout`,{ body, total},{
     observe:'body'
 

@@ -129,9 +129,6 @@ const postForgotPassword = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.postForgotPassword = postForgotPassword;
-let response = (message, data, status) => {
-    return { message, data, status };
-};
 const createToken = (user) => {
     const expiresIn = '1d';
     const secret = config.jwtSecret;
@@ -203,3 +200,6 @@ let updatePassword = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.updatePassword = updatePassword;
+let response = (message, data, status) => {
+    return { message, data, status };
+};
