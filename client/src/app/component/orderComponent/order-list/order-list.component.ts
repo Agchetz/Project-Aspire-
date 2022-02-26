@@ -58,7 +58,7 @@ constructor(
       this.rows = this.dataSource;
       this.data = new MatTableDataSource<Object>(this.rows);
       this.displayedColumns = this.columns.concat(['Action']);
-      this.displayedColumns = this.displayedColumns.filter((data:any) => { return data !== 'image'})
+      this.displayedColumns = this.displayedColumns.filter((data:string) => { return data !== 'image'})
       console.log(this.displayedColumns)
       this.temp = this.fullTableData;
     }

@@ -21,6 +21,7 @@ router.put('/deleteProduct', [checkJwt], deleteProduct)
 router.post('/checkout', [checkJwt], checkout)
 router.put('/clear-cart', [checkJwt], clearCart)
 router.get('/getCartDetails', [checkJwt], getcartOrders)
+router.post('/payments', [checkJwt], getcartOrders)
 
 router.get('/getuser', getUser)
 router.post('/user', [ validator.registerValidator(), validator.validateInput ], createUser)

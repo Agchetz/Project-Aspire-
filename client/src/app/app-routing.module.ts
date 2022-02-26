@@ -15,6 +15,7 @@ import { HideForRolesDirective } from './Shared/directives/hide-for-roles.direct
 import { ProductListComponent } from './component/product/product-list/product-list.component';
 import { CartComponent } from './component/product/cart/cart.component';
 import { CheckoutComponent } from './component/product/checkout/checkout.component';
+import { PaymentsComponent } from './component/payments/payments.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -40,15 +41,24 @@ const routes: Routes = [
     component: ProductListComponent,
     canActivate: [AuthGuard],
   },
-  {path: 'cart',
-  component: CartComponent,
-  canActivate: [AuthGuard],
+  { path: 'cart', 
+  component: CartComponent, 
+  canActivate: [AuthGuard] 
   },
-  {path: 'your-orders',
-  component: CheckoutComponent,
-  canActivate: [AuthGuard],
+  {
+    path: 'your-orders',
+    component: CheckoutComponent,
+    canActivate: [AuthGuard],
   },
-  { path: 'home', component: DashboardComponent, canActivate: [AuthGuard] },
+  {
+    path: 'payments',
+    component: PaymentsComponent,
+    canActivate: [AuthGuard],
+  },
+  { path: 'home', 
+    component: DashboardComponent, 
+    canActivate: [AuthGuard] 
+  },
   { path: 'forgotPassword', component: ForgotPasswordComponent },
   { path: 'resetPassword/:token', component: ResetPasswordComponent },
   { path: '**', component: PageNotFoundComponent },
@@ -70,4 +80,5 @@ export const routingComponents = [
   LoginComponent,
   ResetPasswordComponent,
   CheckoutComponent,
+  PaymentsComponent
 ];

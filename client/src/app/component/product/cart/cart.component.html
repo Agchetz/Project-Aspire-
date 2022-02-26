@@ -28,7 +28,7 @@
             </div>
             <div class="col">
               <mat-icon
-                (click)="deleteProduct(product)"
+                (click)="deleteProduct(product._id)"
                 aria-hidden="false"
                 class="deleteIcon"
                 aria-label="Example delete_forever icon">delete</mat-icon>
@@ -54,9 +54,9 @@
         <select>
           <option class="text-muted">Free-Delivery</option>
         </select>
-        <p>GIVE CODE</p>
-        <input id="code" placeholder="Enter your code" />
-       
+        <!-- <p>GIVE CODE</p>
+        <input id="code" placeholder="Enter your code" /> -->
+        <button style="margin-top: 0vh;" (click)="routeToPayments()" class="btn">Payment</button>
       </form>
       <div
         class="row"

@@ -11,6 +11,7 @@ export class BaseService {
   public userName = new BehaviorSubject("")
   public loginStatus = new BehaviorSubject<boolean> (false)
   public adminRole = new BehaviorSubject<boolean> (false)
+  public paymentPrice = new BehaviorSubject<number>(0)
 
   constructor(private http: HttpClient) { }
 
@@ -88,7 +89,7 @@ export class BaseService {
   })
 }
 
-  updateCart(value:productModel){
+  updateCart(value:cartOrder){
   return this.http.post(`${environment.serverAddress}/updateCart`, value,)
 };
 
@@ -96,7 +97,7 @@ export class BaseService {
   return this.http.get<productModel[]>(`${environment.serverAddress}/getCartProducts`)
 };
 
-  deleteProduct(body:productModel){
+  deleteProduct(body:any){
   return this.http.put(`${environment.serverAddress}/deleteProduct`, body ,{
     observe:'body'
   })
@@ -109,14 +110,18 @@ export class BaseService {
   })
 };
 
-clearCart(){
+  clearCart(){
   return this.http.put(`${environment.serverAddress}/clear-cart` ,{
   })
 };
 
-getCartOrders():Observable<productModel[]>{
+  getCartOrders():Observable<cartOrder[]>{
   return this.http.get<productModel[]>(`${environment.serverAddress}/getCartDetails`)
 };
+
+  makePayment(stripeToken: any): Observable<any>{
+  return this.http.post<any>(`${environment.serverAddress}/payments/`,{token:stripeToken})
+}
 
 }
 

@@ -16,7 +16,7 @@ export interface orderModel {
   department: String;
   quantity: Number;
   price: Number;
-  image: String
+  image: String;
 }
 
 export interface orderDetailsModel {
@@ -30,37 +30,35 @@ export interface orderDetailsModel {
 }
 
 export interface loginDetails {
-  data: 
-    [{ expiresIn: number, token: string }, string, string];
-    message: string;
-    status: number;
+  data: [{ expiresIn: number; token: string }, string, string];
+  message: string;
+  status: number;
 }
 
-export interface orderTestStatus
- {
-    _id: string,
-    total: number 
-  }[]
+export interface orderTestStatus {
+  _id: string;
+  total: number;
+}
+[];
 
 export interface userModel {
-  email: string
-  role: string[]
+  email: string;
+  role: string[];
 }
 
 export interface productModel {
-  product: String,
-  department: String,
-  quantity: number,
-  price: number,
-  image: String,
-  _id: String
-}
-
-
-export interface cartOrder {
-  image: String;
   product: String;
   department: String;
+  quantity: number;
   price: number;
-  quantity: number
+  image: String;
+  _id: String;
+  id: String;
+
+}
+
+export interface cartOrder {
+  product: String;
+  quantity: Number;
+  _id: String;
 }[]

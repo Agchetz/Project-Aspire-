@@ -21,6 +21,7 @@ router.put('/deleteProduct', [checkJwt_1.checkJwt], productController_1.deletePr
 router.post('/checkout', [checkJwt_1.checkJwt], productController_1.checkout);
 router.put('/clear-cart', [checkJwt_1.checkJwt], productController_1.clearCart);
 router.get('/getCartDetails', [checkJwt_1.checkJwt], productController_1.getcartOrders);
+router.post('/payments', [checkJwt_1.checkJwt], productController_1.getcartOrders);
 router.get('/getuser', userController_1.getUser);
 router.post('/user', [validator.registerValidator(), validator.validateInput], userController_1.createUser);
 router.post('/signup', [validator.registerValidator(), validator.validateInput], userController_1.createUser);

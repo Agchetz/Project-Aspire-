@@ -12,11 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clearCart = exports.getcartOrders = exports.checkout = exports.deleteProduct = exports.getCartProducts = exports.updateCart = exports.addToCart = exports.getProduct = void 0;
+exports.makePayment = exports.clearCart = exports.getcartOrders = exports.checkout = exports.deleteProduct = exports.getCartProducts = exports.updateCart = exports.addToCart = exports.getProduct = void 0;
 const productModel_1 = __importDefault(require("../models/productModel"));
 const cart_1 = __importDefault(require("../models/cart"));
 const cartOrder_1 = __importDefault(require("../models/cartOrder"));
 const config = require("../config/config");
+const stripe = require("stripe")("sk_test_51KRvc0SIrrXAtd13rbytR4V5GpDhUnKTmMoXY2eTm9Z9i9Thd8CoosUumYJejQb9mXzt1sAkPDky4NKW0OdCZUmR00LhOLDcHg");
 const getProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     productModel_1.default.find({}, (err, data) => {
         if (err) {
@@ -45,7 +46,6 @@ const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             if (isAlreadyExistedProduct === false) {
                 updatedProducts.push({ product: req.body.id, quantity: 1 });
             }
-            console.log(updatedProducts, "*******************");
             yield cart_1.default.findOneAndUpdate({ _id: isExistingCart[0]._id }, { product: updatedProducts });
         }
         else {
@@ -53,7 +53,6 @@ const addToCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 user_id: req.body.user_id,
                 product: [{ product: req.body.id, quantity: 1 }],
             });
-            console.log(product, "*******************");
             const cartProduct = yield product.save();
             res
                 .status(200)
@@ -75,14 +74,12 @@ const updateCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
         console.log(existedProduct);
         let temp = existedProduct[0].product.flat();
-        console.log('##########3', temp);
         let demo = temp.map((element) => {
             if (element.product.equals(req.body._id)) {
                 element.quantity = req.body.quantity;
             }
             return element;
         });
-        console.log("**********", demo);
         let updated = yield cart_1.default.findOneAndUpdate({ user_id: req.body.user_id }, { product: demo });
         res
             .status(config.successStatusCode)
@@ -162,6 +159,7 @@ const getcartOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             user_id: { $first: "$user_id" },
             total: { $first: "$total" },
             productdetails: { $push: "$productdetails" },
+            createdAt: { $first: "$createdAt" }
         })
             .project({
             product: {
@@ -173,8 +171,8 @@ const getcartOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             },
             orderdetails: 1,
             total: 1,
+            createdAt: 1
         });
-        console.log(cart);
         cart.map((data) => {
             let orderDetails = data.orderdetails;
             let productDetails = data.product;
@@ -201,13 +199,19 @@ const getcartOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.getcartOrders = getcartOrders;
 const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req.body);
-        let temp = { _id: req.body._id };
-        const deleteProduct = yield cart_1.default.deleteOne({ product: temp });
-        console.log(deleteProduct);
+        let temp = req.body.product_id[0];
+        console.log(temp);
+        const findProduct = yield cart_1.default.findOne({ user_id: req.body.user_id });
+        let test = findProduct.product.map((item, index) => {
+            if (item._id.equals(temp)) {
+                findProduct.product.remove(item);
+            }
+        });
+        console.log(findProduct);
+        const replaceProduct = yield cart_1.default.findOneAndUpdate({ user_id: req.body.user_id }, { product: findProduct.product });
         res
             .status(config.successStatusCode)
-            .json(response("Product is removed from the cart", deleteProduct, config.successStatusCode));
+            .json(response("Product is removed from the cart", replaceProduct, config.successStatusCode));
     }
     catch (error) {
         console.error(error);
@@ -220,12 +224,10 @@ exports.deleteProduct = deleteProduct;
 const checkout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let body = req.body.body;
-        console.log(body, '***********');
         let temp = [];
         yield body.orderdetails.map((element) => {
             temp.push({ id: element._id, quantity: element.quantity });
         });
-        console.log(temp);
         let orderproduct = new cartOrder_1.default({
             orderdetails: temp,
             user_id: req.body.user_id,
@@ -262,6 +264,43 @@ const clearCart = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.clearCart = clearCart;
+const makePayment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        console.log(req.body);
+        let token = req.body.token;
+        let customer = stripe.customers
+            .create({
+            email: "agchetz@gmail.com",
+            source: token.id
+        })
+            .then((customer) => {
+            console.log(customer);
+            return stripe.charges.create({
+                amount: 1000,
+                description: "Test Purchase of card payment",
+                currency: "INR",
+                customer: customer.id,
+            });
+        })
+            .then((charge) => {
+            console.log(charge, '***************');
+            res.json({
+                data: "success"
+            });
+        })
+            .catch((err) => {
+            console.log(err);
+            res.json({
+                data: "failure",
+            });
+        });
+        return true;
+    }
+    catch (error) {
+        return false;
+    }
+});
+exports.makePayment = makePayment;
 let response = (message, data, status) => {
     return { message, data, status };
 };

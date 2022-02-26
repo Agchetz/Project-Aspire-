@@ -5,6 +5,7 @@ import Cart from "../models/cart";
 import { IcartOrder } from "../types/cartOrder";
 import cartOrder from "../models/cartOrder";
 const config = require("../config/config");
+const stripe = require("stripe")("sk_test_51KRvc0SIrrXAtd13rbytR4V5GpDhUnKTmMoXY2eTm9Z9i9Thd8CoosUumYJejQb9mXzt1sAkPDky4NKW0OdCZUmR00LhOLDcHg");
 
 const getProduct = async (req: Request, res: Response): Promise<void> => {
   product.find({}, (err: Response, data: Response) => {
@@ -33,7 +34,6 @@ const addToCart = async (req: Request, res: Response): Promise<void> => {
       if (isAlreadyExistedProduct === false) {
         updatedProducts.push({ product: req.body.id, quantity: 1 });
       }
-      console.log(updatedProducts, "*******************");
 
       await Cart.findOneAndUpdate(
         { _id: isExistingCart[0]._id },
@@ -44,7 +44,6 @@ const addToCart = async (req: Request, res: Response): Promise<void> => {
         user_id: req.body.user_id,
         product: [{ product: req.body.id, quantity: 1 }],
       });
-      console.log(product, "*******************");
       const cartProduct = await product.save();
       res
         .status(200)
@@ -77,14 +76,12 @@ const updateCart = async (req: Request, res: Response): Promise<void> => {
     });
     console.log(existedProduct)
     let temp = existedProduct[0].product.flat();
-    console.log('##########3',temp)
     let demo = temp.map((element: any) => {
       if (element.product.equals(req.body._id)) {
         element.quantity = req.body.quantity;
       }
       return element;
     });
-    console.log("**********", demo);
     let updated = await Cart.findOneAndUpdate(
       { user_id: req.body.user_id },
       { product: demo }
@@ -169,6 +166,7 @@ const getcartOrders = async (req: Request, res: Response): Promise<void> => {
         user_id: { $first: "$user_id" },
         total: { $first: "$total" },
         productdetails: { $push: "$productdetails" },
+        createdAt: {$first: "$createdAt"}
       })
       .project({
         product: {
@@ -180,8 +178,8 @@ const getcartOrders = async (req: Request, res: Response): Promise<void> => {
         },
         orderdetails: 1,
         total: 1,
+        createdAt: 1
       });
-      console.log(cart)
     cart.map((data: any) => {
       let orderDetails = data.orderdetails;
       let productDetails = data.product;
@@ -209,16 +207,22 @@ const getcartOrders = async (req: Request, res: Response): Promise<void> => {
 
 const deleteProduct = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log(req.body);
-    let temp: object = { _id: req.body._id };
-    const deleteProduct = await Cart.deleteOne({ product: temp });
-    console.log(deleteProduct);
+    let temp = req.body.product_id[0]
+    console.log(temp);
+    const findProduct:any = await Cart.findOne({user_id: req.body.user_id})
+    let test = findProduct.product.map((item:any, index:number)=>{
+       if(item._id.equals(temp)){
+        findProduct.product.remove(item)
+      }
+    })
+    console.log(findProduct)
+    const replaceProduct = await Cart.findOneAndUpdate({user_id: req.body.user_id}, {product:findProduct.product})
     res
       .status(config.successStatusCode)
       .json(
         response(
           "Product is removed from the cart",
-          deleteProduct,
+          replaceProduct,
           config.successStatusCode
         )
       );
@@ -239,12 +243,10 @@ const deleteProduct = async (req: Request, res: Response): Promise<void> => {
 const checkout = async (req: Request, res: Response): Promise<void> => {
   try {
     let body = req.body.body;
-    console.log(body,'***********')
     let temp: Array<object> = [];
     await body.orderdetails.map((element: any) => {
       temp.push({ id: element._id, quantity: element.quantity });
     });
-    console.log(temp);
     let orderproduct: IcartOrder = new cartOrder({
       orderdetails: temp,
       user_id: req.body.user_id,
@@ -299,6 +301,42 @@ const clearCart = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+const makePayment = async (req: Request, res: Response): Promise<any> => {
+  try {
+    console.log(req.body);
+    let token = req.body.token
+    let customer = stripe.customers
+    .create({
+      email: "agchetz@gmail.com",
+      source: token.id
+    })
+    .then((customer:any) => {
+      console.log(customer);
+      return stripe.charges.create({
+        amount: 1000,
+        description: "Test Purchase of card payment",
+        currency: "INR",
+        customer: customer.id,
+      });
+    })
+    .then((charge:any) => {
+      console.log(charge, '***************');
+        res.json({
+          data:"success"
+      })
+    })
+    .catch((err:any) => {
+        console.log(err)
+        res.json({
+          data: "failure",
+        });
+    });
+  return true;
+} catch (error) {
+  return false;
+}
+}
+
 let response = (message: string, data: any, status: number) => {
   return { message, data, status };
 };
@@ -312,4 +350,5 @@ export {
   checkout,
   getcartOrders,
   clearCart,
+  makePayment
 };

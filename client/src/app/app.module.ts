@@ -17,6 +17,8 @@ import { ForgotPasswordComponent } from './component/userComponent/forgot-passwo
 import { HideForRolesDirective } from './Shared/directives/hide-for-roles.directive';
 import { ProductListComponent } from './component/product/product-list/product-list.component';
 import { CartComponent } from './component/product/cart/cart.component';
+import { PaymentsComponent } from './component/payments/payments.component';
+import { GooglePayButtonModule } from '@google-pay/button-angular';
 
 @NgModule({
   declarations: [
@@ -29,9 +31,11 @@ import { CartComponent } from './component/product/cart/cart.component';
     HideForRolesDirective,
     ProductListComponent,
     CartComponent,
+    PaymentsComponent,
   ],
   imports: [
     BrowserModule,  
+    GooglePayButtonModule,
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,

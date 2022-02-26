@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { BaseService } from 'src/app/Shared/baseService';
+import { cartOrder, productModel } from 'src/app/Shared/interface';
 
 @Component({
   selector: 'app-checkout',
@@ -9,9 +10,9 @@ import { BaseService } from 'src/app/Shared/baseService';
   styleUrls: ['./checkout.component.css'],
 })
 export class CheckoutComponent implements OnInit {
+
   public userName!: string | null;
-  public temp: any = [];
-  public order: any = []
+  public temp!: any
 
   constructor(
     private myService: BaseService,
@@ -27,7 +28,7 @@ export class CheckoutComponent implements OnInit {
   getCartOrders() {
     this.myService.getCartOrders().subscribe(
       (data) => {
-        let temp: any = data;
+        let temp:any = data;
         this.productDetails(temp.data);
       },
       (error) =>
@@ -38,10 +39,11 @@ export class CheckoutComponent implements OnInit {
   productDetails(data: any) {
     console.log(data)
     let date:string
+    let time:string
     this.temp = data.product
     this.temp = data.map((item: any, index: number) => {
       let demo = item.product.map((element: any) => {
-        date = element.createdAt.slice(0,10)
+        date = item.createdAt.slice(0, 10)
         return {
           productName: element.product,
           price: element.price,
@@ -51,7 +53,7 @@ export class CheckoutComponent implements OnInit {
       });
       return {demo, total: item.total,
         orderId: item._id,
-        created: date
+        created: date,
       };
     });
   }
